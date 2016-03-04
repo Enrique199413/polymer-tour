@@ -161,7 +161,7 @@ var declaredProps = (function () {
   };
   // Fires when an instance of the element is created
   polymerTour.createdCallback = function () {
-    addShadowRoot(this, 'polymer-tour');
+    addShadowRoot(this, 'vainilla-tour');
     declaredProps.init(this, polymerTourProperties);
     this.createButtons();
   };
@@ -204,24 +204,23 @@ var declaredProps = (function () {
   polymerTour.event = function (evento) {
     //validations is here
     switch (evento) {
-      case 'next':
-        if (this.currentStep !== this.countStep) {
-          this.currentStep += 1;
-          this.currentLastStep = this.currentStep - 1;
-        }
-        //console.log(this.currentStep);
-        break;
-      case 'forward':
-        if (this.currentStep > 0) {
-          this.currentStep -= 1;
-          this.currentLastStep = this.currentStep + 1;
-        }
-        //console.log(this.currentStep);
-        break;
-      case 'end':
-        //hidden all
-        break;
-      default:
+    case 'next':
+      if (this.currentStep !== this.countStep) {
+        this.currentStep += 1;
+        this.currentLastStep = this.currentStep - 1;
+      }
+      //console.log(this.currentStep);
+      break;
+    case 'forward':
+      if (this.currentStep > 0) {
+        this.currentStep -= 1;
+        this.currentLastStep = this.currentStep + 1;
+      }
+      //console.log(this.currentStep);
+      break;
+    case 'end':
+      console.log('hidde all');
+      break;
     }
     this.verificaBotones(this.currentStep);
     this.nextStep(this.currentStep);
@@ -307,11 +306,9 @@ var declaredProps = (function () {
     this.appendChild(div);
   };
 
-  stepTour.attachedCallback = function () {
-  };
 
-  // Registers custom polymer-tour
-  document.registerElement('polymer-tour', {
+  // Registers custom vainilla-tour
+  document.registerElement('vainilla-tour', {
     prototype: polymerTour
   });
   document.registerElement('step-tour', {

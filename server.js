@@ -58,9 +58,9 @@ app.get('/', function (req, res) {
     "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">",
     "<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, ",
     "initial-scale=1.0, user-scalable=yes\"><title>Polymer tour</title>",
-    "<link rel=\"import\" href=\"/src/polymer-tour.html\"></head>",
+    "<link rel=\"import\" href=\"/src/vainilla-tour.html\"></head>",
     "<script src=\"/bower_components/webcomponentsjs/webcomponents.min.js\"></script>",
-    "<body><polymer-tour></polymer-tour></body></html>"
+    "<body><vainilla-tour></vainilla-tour></body></html>"
   ].join('');
   res.send(doc);
 

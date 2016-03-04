@@ -1,7 +1,7 @@
 {
-  "name": "polymer-tour",
+  "name": "vainilla-tour",
   "authors": [],
-  "main": "dist/polymer-tour.html",
+  "main": "dist/vainilla-tour.html",
   "description": "Polymer tour for apps",
   "private": true,
   "ignore": [
