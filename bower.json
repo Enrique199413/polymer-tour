@@ -1,0 +1,17 @@
+{
+  "name": "polymer-tour",
+  "authors": [],
+  "main": "dist/polymer-tour.html",
+  "description": "Polymer tour for apps",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "~0.7.18"
+  }
+}

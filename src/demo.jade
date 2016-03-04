@@ -1,0 +1,51 @@
+html
+  link(rel='import', href='polymer-tour.html')
+  link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
+  style
+    body {
+      margin:0;
+    }
+    p {
+      
+    }
+  body
+    polymer-tour
+      step-tour(value='Al darle click a salvas la información del exámen', for='loginButton', color='white', background='#F50057')
+      step-tour(value='Second Step', for='userInput', color='white', background='#00ACC1')
+      step-tour(value='Three steps',for='passwordInput', color='white', background='#F50057')
+      step-tour(value='Four Step',for='otro', color='white', background='#F50057')
+      step-tour(value='Five Step',for='texto', color='white', background='#F50057')
+    .row
+      .col-md-4.col-md-offset-4#otro
+        .login-form.panel.panel-default
+          .panel-heading.padded login
+          .panel-body.padded
+            form.separate-sections.form-signin( name = 'formLogin' )
+              .form-group
+                .input-group
+                  .input-group-addon
+                    span.glyphicon.glyphicon-user
+                  input.form-control#userInput(
+                    autofocus
+                    type = 'text'
+                  )
+              .form-group
+                .input-group
+                  .input-group-addon
+                    span.glyphicon.glyphicon-credit-card
+                  input.form-control#passwordInput(
+                    placeholder = "'PASSWORD'",
+                    required
+                    type = 'password'
+                  )
+              .form-group
+                button.btn.btn-inverse.btn-block#loginButton
+                  i.glyphicon.glyphicon-log-in
+                    | &nbsp
+                    span( translate = 'LOGIN' )
+              a.pull-right(
+                href = '/app/#/recupera-password'
+                translate = 'FORGOTTEN_PASSWORD'
+              )
+              p#texto Hola como 
+              .clearfix
