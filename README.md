@@ -8,6 +8,11 @@ Is a pure JS web-component
   <step-tour></step-tour>
 </vainilla-tour>
 ```
+## `<vainilla-tour>` properties
+|property   | default | require  |  description |
+|---|---|---|---|
+|whit-labels   | default | no  |  show or hidde labels |
+
 
 ## `<step-tour>` properties
 

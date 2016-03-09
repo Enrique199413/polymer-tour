@@ -155,8 +155,8 @@ var declaredProps = (function () {
   };
 
   polymerTourProperties = {
-    foo: {
-      type: String
+    whitLabels: {
+      type: Boolean
     }
   };
   // Fires when an instance of the element is created
@@ -164,6 +164,13 @@ var declaredProps = (function () {
     addShadowRoot(this, 'vainilla-tour');
     declaredProps.init(this, polymerTourProperties);
     this.createButtons();
+    if (localStorage.currentStep) {
+      //this.changeRules();
+      this.countStep = localStorage.countStep;
+      this.currentSteps = localStorage.currentSteps;
+      this.verificaBotones(localStorage.currentStep);
+      this.nextStep(localStorage.currentStep);
+    }
   };
 
   polymerTour.createButtons = function () {
@@ -174,27 +181,40 @@ var declaredProps = (function () {
     var buttons = [
         {
           icon: 'fa-arrow-left',
-          action: 'forward'
+          action: 'forward',
+          message: 'Atrás'
         },
         {
           icon: 'fa-arrow-right',
-          action: 'next'
+          action: 'next',
+          message: 'Siguiente'
         },
         {
           icon: 'fa-times-circle',
-          action: 'end'
+          action: 'end',
+          message: 'Finalizar Tour'
         }
       ],
       container = document.createElement('div'),
-      polymertour = this;
-
+      polymertour = this,
+      labels = this.whitLabels;
     buttons.forEach(function (button) {
-      var buttonElement = document.createElement('span');
-      buttonElement.classList.add('fa', button.icon);
-      buttonElement.id = button.action;
-      buttonElement.addEventListener('click', function () {
-        polymertour.event(button.action);
-      });
+      if (labels) {
+        var buttonElement = document.createElement('span');
+        buttonElement.classList.add('button');
+        buttonElement.innerHTML = button.message;
+        buttonElement.id = button.action;
+        buttonElement.addEventListener('click', function () {
+          polymertour.event(button.action);
+        });
+      } else {
+        var buttonElement = document.createElement('span');
+        buttonElement.classList.add('fa', button.icon);
+        buttonElement.id = button.action;
+        buttonElement.addEventListener('click', function () {
+          polymertour.event(button.action);
+        });
+      }
       container.appendChild(buttonElement);
     });
     container.className = 'buttons';
@@ -208,6 +228,11 @@ var declaredProps = (function () {
       if (this.currentStep !== this.countStep) {
         this.currentStep += 1;
         this.currentLastStep = this.currentStep - 1;
+        localStorage.setItem('currentStep', this.currentStep);
+        localStorage.setItem('lastStep', this.lastStep);
+        localStorage.setItem('countStep', this.countStep);
+        localStorage.setItem('currentSteps', this.currentSteps);
+        console.log(this.currentSteps);
       }
       //console.log(this.currentStep);
       break;
@@ -215,6 +240,10 @@ var declaredProps = (function () {
       if (this.currentStep > 0) {
         this.currentStep -= 1;
         this.currentLastStep = this.currentStep + 1;
+        localStorage.setItem('currentStep', this.currentStep);
+        localStorage.setItem('lastStep', this.lastStep);
+        localStorage.setItem('countStep', this.countStep);
+        localStorage.setItem('currentSteps', this.currentSteps);
       }
       //console.log(this.currentStep);
       break;
@@ -229,7 +258,7 @@ var declaredProps = (function () {
 
   polymerTour.nextStep = function (indexForStep) {
     if (indexForStep < this.countStep) {
-      console.log(this.currentSteps[indexForStep].color);
+      //console.log(this.currentSteps[indexForStep].color);
       if (this.currentSteps[indexForStep].color.length !== 0) {
         this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color;
         this.currentSteps[indexForStep].children[0].style.color = this.currentSteps[indexForStep].color;
@@ -242,7 +271,7 @@ var declaredProps = (function () {
         this.currentSteps[indexForStep].children[0].style.background = this.currentSteps[indexForStep].background;
         this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background;
       } else {
-        this.currentSteps[indexForStep].parentNode.style.background = 'white';
+        this.currentSteps[indexForStep].parentNode.style.background = 'white';console.log(localStorage);
         this.currentSteps[indexForStep].children[0].style.background = 'white';
       }
       if (this.currentSteps[indexForStep].for.length !== 0) {
@@ -265,22 +294,23 @@ var declaredProps = (function () {
   polymerTour.verificaBotones = function (indexForSteps) {
     if (indexForSteps === 0) {
       //hidde forward button
-      console.log('hidde forward');
       this.querySelector('#forward').style.display = 'none';
       this.querySelector('#next').style.display = 'inline';
     } else if (this.countStep - 1 === indexForSteps) {
       //is final hidde next button
-      console.log('hidde next');
       this.querySelector('#next').style.display = 'none';
       this.querySelector('#forward').style.display = 'inline';
     } else {
-      console.log('show all buttons');
       this.querySelector('#forward').style.display = 'inline';
       this.querySelector('#next').style.display = 'inline';
     }
   };
 
   polymerTour.attachedCallback = function () {
+    this.changeRules();
+  };
+
+  polymerTour.changeRules = function () {
     var steps = this.children,
       polymertour = this;
     this.currentSteps = filter(steps, function (step) {
@@ -296,14 +326,17 @@ var declaredProps = (function () {
 
   stepTour.createdCallback = function () {
     addShadowRoot(this, 'step-tour');
-    declaredProps.init(this, stepTourProperties);
-    this.createElement(this.value);
   };
 
   stepTour.createElement = function (description) {
     var div = document.createElement('div');
     div.innerHTML = description;
     this.appendChild(div);
+  };
+
+  stepTour.attachedCallback = function () {
+    declaredProps.init(this, stepTourProperties);
+    this.createElement(this.value);
   };
 
 

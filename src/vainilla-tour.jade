@@ -6,9 +6,9 @@ template#vainilla-tour
     :host {
       -webkit-transition: all ease 0.5s; /* Safari */
       transition: all ease 0.5s;
-      width: 250px;
+      width: 400px;
       height: auto;
-      min-height: 90px;
+      min-height: 120px;
       position: absolute;
       top: 0;
       display: inline-block;
@@ -40,9 +40,29 @@ template#vainilla-tour
       text-align: center;
       min-height: 150px;
     }
+    :host ::content .button {
+      background: red;
+      margin-left: 10px;
+      margin-right: 10px;
+      box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.4);
+      display: inline-block;
+      position: relative;
+      box-sizing: border-box;
+      min-width: 5.14em;
+      margin: 0 0.29em;
+      background: transparent;
+      text-align: center;
+      font: inherit;
+      text-transform: uppercase;
+      outline-width: 0;
+      border-radius: 3px;
+      cursor: pointer;
+      z-index: 0;
+      padding: 0.7em 0.57em;
+    }
     :host ::content .buttons {
       border-top: 1px solid #e8e8e8;
-      width: 250px;
+      width: 400px;
       position: absolute;
       bottom: 0px;
       text-align: center;

@@ -1,9 +1,18 @@
 {
   "name": "vainilla-tour",
-  "authors": [],
+  "description": "Tour for apps",
   "main": "dist/vainilla-tour.html",
-  "description": "Polymer tour for apps",
-  "private": true,
+  "authors": [
+    "Enrique López <enrique199413@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "vainilla"
+  ],
+  "homepage": "https://github.com/Enrique199413/vainilla-tour",
+  "moduleType": [
+    "globals"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
