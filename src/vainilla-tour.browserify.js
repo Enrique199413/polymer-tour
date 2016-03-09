@@ -1,6 +1,6 @@
 /*jslint node: true */
 /*jslint nomen: true */
-/*global document, window*/
+/*global document, window, localStorage*/
 'use strict';
 var filter = Function.prototype.call.bind(Array.prototype.filter);
 var addShadowRoot = (function () {
@@ -197,10 +197,11 @@ var declaredProps = (function () {
       ],
       container = document.createElement('div'),
       polymertour = this,
-      labels = this.whitLabels;
+      labels = this.whitLabels,
+      buttonElement;
     buttons.forEach(function (button) {
       if (labels) {
-        var buttonElement = document.createElement('span');
+        buttonElement = document.createElement('span');
         buttonElement.classList.add('button');
         buttonElement.innerHTML = button.message;
         buttonElement.id = button.action;
@@ -208,7 +209,7 @@ var declaredProps = (function () {
           polymertour.event(button.action);
         });
       } else {
-        var buttonElement = document.createElement('span');
+        buttonElement = document.createElement('span');
         buttonElement.classList.add('fa', button.icon);
         buttonElement.id = button.action;
         buttonElement.addEventListener('click', function () {
@@ -271,7 +272,7 @@ var declaredProps = (function () {
         this.currentSteps[indexForStep].children[0].style.background = this.currentSteps[indexForStep].background;
         this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background;
       } else {
-        this.currentSteps[indexForStep].parentNode.style.background = 'white';console.log(localStorage);
+        this.currentSteps[indexForStep].parentNode.style.background = 'white';
         this.currentSteps[indexForStep].children[0].style.background = 'white';
       }
       if (this.currentSteps[indexForStep].for.length !== 0) {
