@@ -233,7 +233,7 @@ var declaredProps = (function () {
     case 'forward':
       if (this.currentStep > 0) {
         this.currentStep -= 1;
-        this.currentLastStep = parseInt(this.currentStep) + 1;
+        this.currentLastStep = parseInt(this.currentStep, 10) + 1;
         localStorage.setItem('currentStep', this.currentStep);
         localStorage.setItem('lastStep', this.lastStep);
         localStorage.setItem('countStep', this.countStep);
@@ -253,12 +253,13 @@ var declaredProps = (function () {
   polymerTour.nextStep = function (indexForStep) {
     var currentWidth = window.innerWidth || document.body.clientWidth,
       currentHeight = window.innerHeight || document.body.clientHeight,
-      widthElement = 400, heightElement = 160;
+      widthElement = 400,
+      heightElement = 160,
+      suma;
     if (indexForStep < this.countStep) {
       if (this.currentSteps[indexForStep].for.length !== 0) {
         if ((document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 120 > currentHeight) {
-
-          var suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
+          suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
           this.currentSteps[indexForStep].parentNode.style.top = 'calc(100% - ' + suma + 'px)';
           document.styleSheets[0].insertRule('vainilla-tour:before {top:120px!important;bottom: -20px;transform: rotate(180deg);}', 0);
         } else {
@@ -268,7 +269,7 @@ var declaredProps = (function () {
         if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
           this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
           document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
-        } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0){
+        } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0) {
           document.styleSheets[0].deleteRule(0);
           this.currentSteps[indexForStep].parentNode.style.left = '0px';
         } else {
@@ -333,7 +334,7 @@ var declaredProps = (function () {
     });
 
 
-    this.currentStep = parseInt(localStorage.currentStep) || 0;
+    this.currentStep = parseInt(localStorage.currentStep, 10) || 0;
     this.countStep = this.currentSteps.length;
     this.verificaBotones(this.currentStep);
     setTimeout(function () {
