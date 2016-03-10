@@ -1,6 +1,6 @@
 /*jslint node: true */
 /*jslint nomen: true */
-/*global document, window, localStorage*/
+/*global document, window, localStorage, getComputedStyle*/
 'use strict';
 var filter = Function.prototype.call.bind(Array.prototype.filter);
 var addShadowRoot = (function () {
@@ -276,7 +276,9 @@ var declaredProps = (function () {
           document.styleSheets[0].deleteRule(0);
           this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
         }
-        window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
+        if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
+          window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
+        }
       } else {
         //this.currentSteps[indexForStep].parentNode.style.top = '20%';
         this.currentSteps[indexForStep].parentNode.style.left = 'calc(50% - 125px)';
