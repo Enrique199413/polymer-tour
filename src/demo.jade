@@ -8,15 +8,25 @@ html
     p {
       
     }
+    .fixed {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+    }
+    .left {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+    }
   body
     vainilla-tour(whit-labels='true')
       step-tour(value='Al darle click a salvas la información Al darle click a salvas la información Al darle click a salvas la información del exámen', for='loginButton', color='white', background='#F50057')
       step-tour(value='Second Step', for='userInput', color='white', background='#00ACC1')
       step-tour(value='Three steps',for='passwordInput', color='white', background='#F50057')
-      step-tour(value='Four Step',for='otro', color='white', background='#F50057')
-      step-tour(value='Five Step',for='texto', color='white', background='#F50057')
+      step-tour(value='Four Step',for='fixeded', color='white', background='#F50057')
+      step-tour(value='position fixed',for='fixed', color='white', background='#F50057')
     .row
-      .col-md-4.col-md-offset-4#otro
+      .col-md-12#otro
         .login-form.panel.panel-default
           .panel-heading.padded login
           .panel-body.padded
@@ -29,6 +39,9 @@ html
                     autofocus
                     type = 'text'
                   )
+              .jumbotron Hi!
+              div#fixed.fixed Enrique
+              div#fixeded.left Enrique_oo
               .form-group
                 .input-group
                   .input-group-addon

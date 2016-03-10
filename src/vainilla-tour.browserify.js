@@ -164,13 +164,6 @@ var declaredProps = (function () {
     addShadowRoot(this, 'vainilla-tour');
     declaredProps.init(this, polymerTourProperties);
     this.createButtons();
-    if (localStorage.currentStep) {
-      //this.changeRules();
-      this.countStep = localStorage.countStep;
-      this.currentSteps = localStorage.currentSteps;
-      this.verificaBotones(localStorage.currentStep);
-      this.nextStep(localStorage.currentStep);
-    }
   };
 
   polymerTour.createButtons = function () {
@@ -233,14 +226,14 @@ var declaredProps = (function () {
         localStorage.setItem('lastStep', this.lastStep);
         localStorage.setItem('countStep', this.countStep);
         localStorage.setItem('currentSteps', this.currentSteps);
-        console.log(this.currentSteps);
+        console.log(this.currentStep);
       }
       //console.log(this.currentStep);
       break;
     case 'forward':
       if (this.currentStep > 0) {
         this.currentStep -= 1;
-        this.currentLastStep = this.currentStep + 1;
+        this.currentLastStep = parseInt(this.currentStep) + 1;
         localStorage.setItem('currentStep', this.currentStep);
         localStorage.setItem('lastStep', this.lastStep);
         localStorage.setItem('countStep', this.countStep);
@@ -258,7 +251,37 @@ var declaredProps = (function () {
   };
 
   polymerTour.nextStep = function (indexForStep) {
+    var currentWidth = window.innerWidth || document.body.clientWidth,
+      currentHeight = window.innerHeight || document.body.clientHeight,
+      widthElement = 400, heightElement = 160;
     if (indexForStep < this.countStep) {
+      if (this.currentSteps[indexForStep].for.length !== 0) {
+        if ((document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 120 > currentHeight) {
+
+          var suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
+          this.currentSteps[indexForStep].parentNode.style.top = 'calc(100% - ' + suma + 'px)';
+          document.styleSheets[0].insertRule('vainilla-tour:before {top:120px!important;bottom: -20px;transform: rotate(180deg);}', 0);
+        } else {
+          this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
+          document.styleSheets[0].deleteRule(0);
+        }
+        if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
+          this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
+          document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
+        } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0){
+          document.styleSheets[0].deleteRule(0);
+          this.currentSteps[indexForStep].parentNode.style.left = '0px';
+        } else {
+          document.styleSheets[0].deleteRule(0);
+          this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
+        }
+        window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
+      } else {
+        //this.currentSteps[indexForStep].parentNode.style.top = '20%';
+        this.currentSteps[indexForStep].parentNode.style.left = 'calc(50% - 125px)';
+        //this.currentSteps[indexForStep].parentNode.style.bottom = '0';
+        //this.currentSteps[indexForStep].parentNode.style.margin = '0 auto 0 auto';
+      }
       //console.log(this.currentSteps[indexForStep].color);
       if (this.currentSteps[indexForStep].color.length !== 0) {
         this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color;
@@ -274,15 +297,6 @@ var declaredProps = (function () {
       } else {
         this.currentSteps[indexForStep].parentNode.style.background = 'white';
         this.currentSteps[indexForStep].children[0].style.background = 'white';
-      }
-      if (this.currentSteps[indexForStep].for.length !== 0) {
-        this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
-        this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
-      } else {
-        //this.currentSteps[indexForStep].parentNode.style.top = '20%';
-        this.currentSteps[indexForStep].parentNode.style.left = 'calc(50% - 125px)';
-        //this.currentSteps[indexForStep].parentNode.style.bottom = '0';
-        //this.currentSteps[indexForStep].parentNode.style.margin = '0 auto 0 auto';
       }
       this.currentSteps[indexForStep].children[0].style.opacity = 1;
     }
@@ -317,12 +331,14 @@ var declaredProps = (function () {
     this.currentSteps = filter(steps, function (step) {
       return step.tagName === 'STEP-TOUR';
     });
-    this.currentStep = 0;
+
+
+    this.currentStep = parseInt(localStorage.currentStep) || 0;
     this.countStep = this.currentSteps.length;
     this.verificaBotones(this.currentStep);
     setTimeout(function () {
       polymertour.nextStep(polymertour.currentStep);
-    }, 0);
+    }, 10);
   };
 
   stepTour.createdCallback = function () {
