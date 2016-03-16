@@ -193,6 +193,7 @@ var declaredProps = (function () {
       labels = this.whitLabels,
       buttonElement;
     buttons.forEach(function (button) {
+      console.log(labels);
       if (labels) {
         buttonElement = document.createElement('span');
         buttonElement.classList.add('button');
@@ -228,6 +229,8 @@ var declaredProps = (function () {
         localStorage.setItem('currentSteps', this.currentSteps);
         console.log(this.currentStep);
       }
+      this.verificaBotones(this.currentStep);
+      this.nextStep(this.currentStep);
       //console.log(this.currentStep);
       break;
     case 'forward':
@@ -239,14 +242,14 @@ var declaredProps = (function () {
         localStorage.setItem('countStep', this.countStep);
         localStorage.setItem('currentSteps', this.currentSteps);
       }
+      this.verificaBotones(this.currentStep);
+      this.nextStep(this.currentStep);
       //console.log(this.currentStep);
       break;
     case 'end':
       console.log('hidde all');
       break;
     }
-    this.verificaBotones(this.currentStep);
-    this.nextStep(this.currentStep);
     //console.log(this.currentSteps, this.countStep, this.currentStep);
   };
 
@@ -264,16 +267,16 @@ var declaredProps = (function () {
           document.styleSheets[0].insertRule('vainilla-tour:before {top:120px!important;bottom: -20px;transform: rotate(180deg);}', 0);
         } else {
           this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
-          document.styleSheets[0].deleteRule(0);
+          //document.styleSheets[0].deleteRule(0);
         }
         if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
           this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
           document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
         } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0) {
-          document.styleSheets[0].deleteRule(0);
+          //document.styleSheets[0].deleteRule(0);
           this.currentSteps[indexForStep].parentNode.style.left = '0px';
         } else {
-          document.styleSheets[0].deleteRule(0);
+          //document.styleSheets[0].deleteRule(0);
           this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
         }
         if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
@@ -303,7 +306,7 @@ var declaredProps = (function () {
       }
       this.currentSteps[indexForStep].children[0].style.opacity = 1;
     }
-    if (this.currentLastStep !== undefined) {
+    if (this.currentLastStep !== undefined && this.currentSteps[this.currentLastStep] !== undefined) {
       this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
     }
     //console.log(this.currentLastStep);
@@ -318,6 +321,9 @@ var declaredProps = (function () {
       //is final hidde next button
       this.querySelector('#next').style.display = 'none';
       this.querySelector('#forward').style.display = 'inline';
+    } else if (indexForSteps === -1) {
+      this.querySelector('#next').style.display = 'none';
+      this.querySelector('#forward').style.display = 'none';
     } else {
       this.querySelector('#forward').style.display = 'inline';
       this.querySelector('#next').style.display = 'inline';
@@ -338,10 +344,20 @@ var declaredProps = (function () {
 
     this.currentStep = parseInt(localStorage.currentStep, 10) || 0;
     this.countStep = this.currentSteps.length;
-    this.verificaBotones(this.currentStep);
-    setTimeout(function () {
-      polymertour.nextStep(polymertour.currentStep);
-    }, 10);
+    console.log(this.countStep);
+    if (this.countStep === 1) {
+      //solo existe un mensaje para el tour no vale la pena poner tantos mensajes
+      console.log('que hago');
+      this.verificaBotones(-1);
+      setTimeout(function () {
+        polymertour.nextStep(0);
+      }, 10);
+    } else {
+      this.verificaBotones(this.currentStep);
+      setTimeout(function () {
+        polymertour.nextStep(polymertour.currentStep);
+      }, 10);
+    }
   };
 
   stepTour.createdCallback = function () {

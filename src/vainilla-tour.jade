@@ -3,22 +3,26 @@ link(href='https://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', ty
 template#vainilla-tour
   style
     :host {
-      -webkit-transition: all ease 0.5s; /* Safari */
+      -webkit-transition: all ease 0.5s;
       transition: all ease 0.5s;
       width: 400px;
       height: auto;
       min-height: 120px;
       position: fixed;
-      top: 0;
+      top: 50%;
+      left: 0;
       display: inline-block;
       z-index: 10000000;
       box-sizing: border-box;
-      background-color: #ffffff;
+      background-color: #1565C0;
+      border-bottom-color: #1565C0;
       border-radius: 2px;
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
       padding-top: 10px;
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 0px 0 rgba(0, 0, 0, 0.12), 0 3px 0px -3px rgba(0, 0, 0, 0.2);
+      right: 0px;
+      margin: 0 auto;
     }
     :host:before {
       z-index: 4;
@@ -28,10 +32,11 @@ template#vainilla-tour
       border-bottom: 10px solid black;
       border-bottom-color: inherit;
       border-left: solid transparent 10px;
-      top: -20px;
+      top: -30px;
       position: absolute;
       pointer-events: none;
       border-right: solid transparent 10px;
+      text-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 0px 0 rgba(0, 0, 0, 0.12), 0 3px 0px -3px rgba(0, 0, 0, 0.2);
     }
     :host ::content{
       color: cyan;

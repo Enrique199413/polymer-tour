@@ -1,5 +1,5 @@
 html
-  link(rel='import', href='vainilla-tour.html')
+  link(rel='import', href='../dist/vainilla-tour.html')
   link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
   style
     body {
@@ -16,14 +16,14 @@ html
     .left {
       position: fixed;
       bottom: 16px;
-      left: 16px;
+      left: 16px;src
     }
   body
     vainilla-tour(whit-labels='true')
-      step-tour(value='Al darle click a salvas la información Al darle click a salvas la información Al darle click a salvas la información del exámen', for='loginButton', color='white', background='#F50057')
-      step-tour(value='Second Step', for='userInput', color='white', background='#00ACC1')
-      step-tour(value='Three steps',for='passwordInput', color='white', background='#F50057')
-      step-tour(value='Four Step',for='fixeded', color='white', background='#F50057')
+      step-tour(value='Primer mensaje', for='loginButton', color='white', background='#F50057')
+      step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
+      step-tour(value='Paso de la contraseña',for='passwordInput', color='white', background='#F50057')
+      step-tour(value='sin color y sin for')
       step-tour(value='position fixed',for='fixed', color='white', background='#F50057')
     .row
       .col-md-12#otro
