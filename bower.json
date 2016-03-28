@@ -21,6 +21,10 @@
     "tests"
   ],
   "dependencies": {
-    "webcomponentsjs": "~0.7.18"
+    "webcomponentsjs": "~0.7.18",
+    "ikenga-container": "git@prestigos-git:ikenga/ikenga-container.git#3513cf12274bcd6ce1a4bbc8f021c8152c90698b",
+    "paper-datatable": "^0.9.8",
+    "paper-card": "PolymerElements/paper-card#^1.1.1",
+    "paper-button": "PolymerElements/paper-button#^1.0.11"
   }
 }

@@ -134,12 +134,18 @@ var declaredProps = (function () {
 
 (function () {
   //initial declared variables
-  var polymerTour, polymerTourProperties, stepTour, stepTourProperties;
+  var polymerTour, polymerTourProperties, stepTour, stepTourProperties,
+    stepInnerTour, stepInnerTourProperties;
 
   polymerTour = Object.create(window.HTMLElement.prototype);
   stepTour = Object.create(window.HTMLElement.prototype);
+  stepInnerTour = Object.create(window.HTMLElement.prototype);
+
 
   stepTourProperties = {
+    inherit: {
+      type: Boolean
+    },
     for: {
       type: String
     },
@@ -153,6 +159,8 @@ var declaredProps = (function () {
       type: String
     }
   };
+
+  stepInnerTourProperties = stepTourProperties;
 
   polymerTourProperties = {
     whitLabels: {
@@ -193,7 +201,6 @@ var declaredProps = (function () {
       labels = this.whitLabels,
       buttonElement;
     buttons.forEach(function (button) {
-      console.log(labels);
       if (labels) {
         buttonElement = document.createElement('span');
         buttonElement.classList.add('button');
@@ -227,7 +234,6 @@ var declaredProps = (function () {
         localStorage.setItem('lastStep', this.lastStep);
         localStorage.setItem('countStep', this.countStep);
         localStorage.setItem('currentSteps', this.currentSteps);
-        console.log(this.currentStep);
       }
       this.verificaBotones(this.currentStep);
       this.nextStep(this.currentStep);
@@ -253,6 +259,31 @@ var declaredProps = (function () {
     //console.log(this.currentSteps, this.countStep, this.currentStep);
   };
 
+
+  polymerTour.cleanBorders = function (indexForStep) {
+    if (indexForStep !== 0 && this.currentSteps[indexForStep - 1].for.length !== 0) {
+      if (document.querySelector('#' + this.currentSteps[indexForStep - 1].for) !== null) {
+        document.querySelector('#' + this.currentSteps[indexForStep - 1].for).classList.remove('border');
+      }
+    }
+    if (indexForStep + 1 < this.countStep && this.currentSteps[indexForStep + 1].for.length !== 0) {
+      if (document.querySelector('#' + this.currentSteps[indexForStep + 1].for) !== null) {
+        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).classList.remove('border');
+      }
+    }
+  };
+
+  polymerTour.nextSubStep = function (indexForStep) {
+    this.getLastItem = this.currentSteps[indexForStep - 1].children[this.currentSteps[indexForStep - 1].children.length - 1];
+
+    this.getLastItem.style.opacity = 0;
+
+
+    this.hijos[this.currentSubStep].children[0].style.opacity = 1;
+    console.log('tiene subSteps', this.currentSubStep, this.hijos[this.currentSubStep].children[0]);
+    this.currentSubStep = this.currentSubStep + 1;
+  };
+
   polymerTour.nextStep = function (indexForStep) {
     var currentWidth = window.innerWidth || document.body.clientWidth,
       currentHeight = window.innerHeight || document.body.clientHeight,
@@ -261,53 +292,68 @@ var declaredProps = (function () {
       suma;
     if (indexForStep < this.countStep) {
       if (this.currentSteps[indexForStep].for.length !== 0) {
-        if ((document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 120 > currentHeight) {
-          suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
-          this.currentSteps[indexForStep].parentNode.style.top = 'calc(100% - ' + suma + 'px)';
-          document.styleSheets[0].insertRule('vainilla-tour:before {top:120px!important;bottom: -20px;transform: rotate(180deg);}', 0);
+        if (document.querySelector('#' + this.currentSteps[indexForStep].for) !== null) {
+          document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
+          document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
+          if ((document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 120 > currentHeight) {
+            suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
+            this.currentSteps[indexForStep].parentNode.style.top = 'calc(100% - ' + suma + 'px)';
+
+          } else {
+            this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
+            //document.styleSheets[0].deleteRule(0);
+          }
+          if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
+            this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
+            //document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
+          } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0) {
+            //document.styleSheets[0].deleteRule(0);
+            this.currentSteps[indexForStep].parentNode.style.left = '0px';
+          } else {
+            //document.styleSheets[0].deleteRule(0);
+            this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
+          }
+          if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
+            //window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
+          }
+
         } else {
-          this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
-          //document.styleSheets[0].deleteRule(0);
-        }
-        if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
-          this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
-          document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
-        } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0) {
-          //document.styleSheets[0].deleteRule(0);
-          this.currentSteps[indexForStep].parentNode.style.left = '0px';
-        } else {
-          //document.styleSheets[0].deleteRule(0);
-          this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
-        }
-        if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
-          window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
+          console.error('El atributo "for" con el valor "' + this.currentSteps[indexForStep].for + '" no existe', this.currentSteps[indexForStep]);
         }
       } else {
+        this.currentSteps[indexForStep].parentNode.style.top = '50%';
         //this.currentSteps[indexForStep].parentNode.style.top = '20%';
-        this.currentSteps[indexForStep].parentNode.style.left = 'calc(50% - 125px)';
+        this.currentSteps[indexForStep].parentNode.classList.add('ejemplo');
+
         //this.currentSteps[indexForStep].parentNode.style.bottom = '0';
         //this.currentSteps[indexForStep].parentNode.style.margin = '0 auto 0 auto';
       }
-      //console.log(this.currentSteps[indexForStep].color);
-      if (this.currentSteps[indexForStep].color.length !== 0) {
-        this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color;
-        this.currentSteps[indexForStep].children[0].style.color = this.currentSteps[indexForStep].color;
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.color = 'black';
-        this.currentSteps[indexForStep].children[0].style.color = 'black';
-      }
-      if (this.currentSteps[indexForStep].background.length !== 0) {
-        this.currentSteps[indexForStep].parentNode.style.background = this.currentSteps[indexForStep].background;
-        this.currentSteps[indexForStep].children[0].style.background = this.currentSteps[indexForStep].background;
-        this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background;
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.background = 'white';
-        this.currentSteps[indexForStep].children[0].style.background = 'white';
-      }
+    }
+
+    this.cleanBorders(indexForStep);
+
+
+    if (this.currentSteps[indexForStep].children.length > 1) {
+      this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
+      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
+      this.currentSteps[indexForStep].parentNode.style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+      this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+
+      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.opacity = 1;
+    } else {
+      this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
+      this.currentSteps[indexForStep].children[0].style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
+      this.currentSteps[indexForStep].parentNode.style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+      this.currentSteps[indexForStep].children[0].style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+      this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+
       this.currentSteps[indexForStep].children[0].style.opacity = 1;
     }
     if (this.currentLastStep !== undefined && this.currentSteps[this.currentLastStep] !== undefined) {
-      this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
+      if (!this.subSteps) {
+        this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
+      }
     }
     //console.log(this.currentLastStep);
   };
@@ -336,18 +382,19 @@ var declaredProps = (function () {
 
   polymerTour.changeRules = function () {
     var steps = this.children,
-      polymertour = this;
+      polymertour = this,
+      that = this;
+    this.currentSubStep = 0;
+
     this.currentSteps = filter(steps, function (step) {
       return step.tagName === 'STEP-TOUR';
     });
 
-
     this.currentStep = parseInt(localStorage.currentStep, 10) || 0;
+
     this.countStep = this.currentSteps.length;
-    console.log(this.countStep);
+
     if (this.countStep === 1) {
-      //solo existe un mensaje para el tour no vale la pena poner tantos mensajes
-      console.log('que hago');
       this.verificaBotones(-1);
       setTimeout(function () {
         polymertour.nextStep(0);
@@ -376,12 +423,31 @@ var declaredProps = (function () {
   };
 
 
+
+  stepInnerTour.createdCallback = function () {
+    addShadowRoot(this, 'step-inner-tour');
+  };
+
+  stepInnerTour.createElement = function (description) {
+    var div = document.createElement('div');
+    div.innerHTML = description;
+    this.appendChild(div);
+  };
+
+  stepInnerTour.attachedCallback = function () {
+    declaredProps.init(this, stepInnerTourProperties);
+    this.createElement(this.value);
+  };
+
   // Registers custom vainilla-tour
   document.registerElement('vainilla-tour', {
     prototype: polymerTour
   });
   document.registerElement('step-tour', {
     prototype: stepTour
+  });
+  document.registerElement('step-inner-tour', {
+    prototype: stepInnerTour
   });
 
 }());

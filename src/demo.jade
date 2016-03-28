@@ -1,12 +1,17 @@
 html
-  link(rel='import', href='../dist/vainilla-tour.html')
-  link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
+  link(rel='import', href='../src/vainilla-tour.html')
+  link(rel='import', href='/bower_components/ikenga-container/dist/ikenga-container.html')
+  link(rel='import', href='/bower_components/paper-card/paper-card.html')
+  link(rel='import', href='/bower_components/paper-button/paper-button.html')
   style
     body {
       margin:0;
     }
     p {
       
+    }
+    paper-card {
+      width: 100%;
     }
     .fixed {
       position: fixed;
@@ -18,47 +23,72 @@ html
       bottom: 16px;
       left: 16px;src
     }
+    .contenido {
+      display: inline-block;
+      position: relative;
+      box-sizing: border-box;
+      background-color: #ffffff;
+      border-radius: 2px;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      width: 100%;
+      text-align: center;
+    }
+    .tite {
+      padding: 16px;
+      font-size: 24px;
+      font-weight: 400;
+      color: #000;
+      bottom: 0px;
+      position: relative;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+      overflow: hidden;
+    }
+    .card-content {
+      padding: 16px;
+      position: relative;
+    }
   body
     vainilla-tour(whit-labels='true')
-      step-tour(value='Primer mensaje', for='loginButton', color='white', background='#F50057')
+      step-tour(value='Primer mensaje', for='examenesEmpresa', color='white', background='#F50057')
       step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
-      step-tour(value='Paso de la contraseña',for='passwordInput', color='white', background='#F50057')
+      step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
+      step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057', inherit)
       step-tour(value='sin color y sin for')
-      step-tour(value='position fixed',for='fixed', color='white', background='#F50057')
-    .row
-      .col-md-12#otro
-        .login-form.panel.panel-default
-          .panel-heading.padded login
-          .panel-body.padded
-            form.separate-sections.form-signin( name = 'formLogin' )
-              .form-group
-                .input-group
-                  .input-group-addon
-                    span.glyphicon.glyphicon-user
-                  input.form-control#userInput(
-                    autofocus
-                    type = 'text'
-                  )
-              .jumbotron Hi!
-              div#fixed.fixed Enrique
-              div#fixeded.left Enrique_oo
-              .form-group
-                .input-group
-                  .input-group-addon
-                    span.glyphicon.glyphicon-credit-card
-                  input.form-control#passwordInput(
-                    placeholder = "'PASSWORD'",
-                    required
-                    type = 'password'
-                  )
-              .form-group
-                button.btn.btn-inverse.btn-block#loginButton
-                  i.glyphicon.glyphicon-log-in
-                    | &nbsp
-                    span( translate = 'LOGIN' )
-              a.pull-right(
-                href = '/app/#/recupera-password'
-                translate = 'FORGOTTEN_PASSWORD'
-              )
-              p#texto Hola como 
-              .clearfix
+      step-tour(value='Para la columna', for='colum', color='white', background='#F50057')
+      step-tour(value='Para la imagen',for='image', color='white', background='#F50057')
+    ikenga-container
+      ikenga-nav(color='#056A6F')
+        ikenga-menu-actions#examenesEmpresa(
+          home
+          title = 'Polymer Tour'
+        )
+        ikenga-icon-nav#image(icon="https://upload.wikimedia.org/wikipedia/commons/5/5c/Linus_Torvalds_(cropped).jpg", for="ikenga-menu", position="right")
+        ikenga-menu(position="right")
+          ikenga-item-menu(href='/logout') Cerrar sesión
+          ikenga-item-menu Términos y condiciones
+          ikenga-item-menu Avisos de privacidad
+          ikenga-item-menu Preguntas frecuentes
+          ikenga-item-menu Noticias
+      ikenga-content
+        paper-card#paperCard(heading='Multi Tour Option 1')
+          .card-content Contenido
+          .card-actions
+            paper-button#buttonone Button 1
+            paper-button#buttontwo Button 2
+        paper-card#paperCard(heading='Multi Tour Option 2')
+          .card-content Contenido
+          .card-actions
+            paper-button#buttonone Button 1
+            paper-button#buttontwo Button 2
+        paper-card#paperCard(heading='Multi Tour Option 3')
+          .card-content Contenido
+          .card-actions
+            paper-button#buttonone Button 1
+            paper-button#buttontwo Button 2
+        paper-card#paperCard(heading='Multi Tour Option 4')
+          .card-content Contenido
+          .card-actions
+            paper-button#buttonone Button 1
+            paper-button#buttontwo Button 2
