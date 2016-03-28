@@ -313,9 +313,9 @@ var declaredProps = (function () {
             //document.styleSheets[0].deleteRule(0);
             this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
           }
-          if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
+          /*if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
             //window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
-          }
+          }*/
 
         } else {
           console.error('El atributo "for" con el valor "' + this.currentSteps[indexForStep].for + '" no existe', this.currentSteps[indexForStep]);
@@ -382,8 +382,7 @@ var declaredProps = (function () {
 
   polymerTour.changeRules = function () {
     var steps = this.children,
-      polymertour = this,
-      that = this;
+      polymertour = this;
     this.currentSubStep = 0;
 
     this.currentSteps = filter(steps, function (step) {
