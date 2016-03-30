@@ -239,7 +239,7 @@ var declaredProps = (function () {
         data.lastStep = this.lastStep;
         data.countStep = this.countStep;
 
-        this.addDataToLocalstorage(this.name, data)
+        this.addDataToLocalstorage(this.name, data);
       }
       this.verificaBotones(this.currentStep);
       this.nextStep(this.currentStep);
@@ -254,7 +254,7 @@ var declaredProps = (function () {
         data.lastStep = this.lastStep;
         data.countStep = this.countStep;
 
-        this.addDataToLocalstorage(this.name, data)
+        this.addDataToLocalstorage(this.name, data);
       }
       this.verificaBotones(this.currentStep);
       this.nextStep(this.currentStep);
@@ -263,7 +263,7 @@ var declaredProps = (function () {
     case 'end':
       data.currentStep = -1;
       data.countStep = this.countStep;
-      this.addDataToLocalstorage(this.name, data)
+      this.addDataToLocalstorage(this.name, data);
       console.log('hidde all');
       break;
     }
@@ -391,35 +391,39 @@ var declaredProps = (function () {
   };
 
   polymerTour.addDataToLocalstorage = function () {
-    var name, data;
+    var name, data, argumentos;
+
+    argumentos = arguments;
     if (arguments.length === 2) {
-      name = arguments[0];
-      data = arguments[1];
+      name = argumentos[0];
+      data = argumentos[1];
       localStorage.setItem(name, JSON.stringify(data));
     }
 
   };
 
   polymerTour.getFromLocalStorage = function () {
-    var origin, query, data;
-    if (arguments.length === 1) {
-      origin = arguments[0];
+    var origin, query, data, argumentos;
+
+    argumentos = arguments;
+    if (argumentos.length === 1) {
+      origin = argumentos[0];
     }
-    if (arguments.length === 2) {
-      origin = arguments[0];
-      query = arguments[1];
+    if (argumentos.length === 2) {
+      origin = argumentos[0];
+      query = argumentos[1];
     }
     if (query) {
       if (localStorage[origin]) {
         data = JSON.parse(localStorage[origin])[query];
       } else {
-        console.error('getFromLocalStorage()says: El atributo de "'+ origin + '" no esta definido en el localStorage');
+        console.error('getFromLocalStorage()says: El atributo de "' + origin + '" no esta definido en el localStorage');
       }
     } else {
       if (localStorage[origin]) {
-        data = JSON.parse(localStorage[origin])
+        data = JSON.parse(localStorage[origin]);
       } else {
-        console.error('getFromLocalStorage()says: El atributo de "'+ origin + '" no esta definido en el localStorage');
+        console.error('getFromLocalStorage()says: El atributo de "' + origin + '" no esta definido en el localStorage');
       }
     }
     return data;
