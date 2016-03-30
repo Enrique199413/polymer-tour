@@ -1,0 +1,25 @@
+{
+  "name": "ikenga-container",
+  "authors": [],
+  "main": "dist/ikenga-container.html",
+  "description": "Ikenga container for Ikenga",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "~0.7.18"
+  },
+  "_release": "3513cf1227",
+  "_resolution": {
+    "type": "commit",
+    "commit": "3513cf12274bcd6ce1a4bbc8f021c8152c90698b"
+  },
+  "_source": "git@prestigos-git:ikenga/ikenga-container.git",
+  "_target": "3513cf12274bcd6ce1a4bbc8f021c8152c90698b",
+  "_originalSource": "git@prestigos-git:ikenga/ikenga-container.git"
+}
