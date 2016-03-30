@@ -165,6 +165,9 @@ var declaredProps = (function () {
   polymerTourProperties = {
     whitLabels: {
       type: Boolean
+    },
+    name: {
+      type: String
     }
   };
   // Fires when an instance of the element is created
@@ -225,15 +228,18 @@ var declaredProps = (function () {
 
   polymerTour.event = function (evento) {
     //validations is here
+    var data = {};
     switch (evento) {
     case 'next':
       if (this.currentStep !== this.countStep) {
         this.currentStep += 1;
         this.currentLastStep = this.currentStep - 1;
-        localStorage.setItem('currentStep', this.currentStep);
-        localStorage.setItem('lastStep', this.lastStep);
-        localStorage.setItem('countStep', this.countStep);
-        localStorage.setItem('currentSteps', this.currentSteps);
+
+        data.currentStep = this.currentStep;
+        data.lastStep = this.lastStep;
+        data.countStep = this.countStep;
+
+        this.addDataToLocalstorage(this.name, data)
       }
       this.verificaBotones(this.currentStep);
       this.nextStep(this.currentStep);
@@ -243,16 +249,21 @@ var declaredProps = (function () {
       if (this.currentStep > 0) {
         this.currentStep -= 1;
         this.currentLastStep = parseInt(this.currentStep, 10) + 1;
-        localStorage.setItem('currentStep', this.currentStep);
-        localStorage.setItem('lastStep', this.lastStep);
-        localStorage.setItem('countStep', this.countStep);
-        localStorage.setItem('currentSteps', this.currentSteps);
+
+        data.currentStep = this.currentStep;
+        data.lastStep = this.lastStep;
+        data.countStep = this.countStep;
+
+        this.addDataToLocalstorage(this.name, data)
       }
       this.verificaBotones(this.currentStep);
       this.nextStep(this.currentStep);
       //console.log(this.currentStep);
       break;
     case 'end':
+      data.currentStep = -1;
+      data.countStep = this.countStep;
+      this.addDataToLocalstorage(this.name, data)
       console.log('hidde all');
       break;
     }
@@ -375,21 +386,59 @@ var declaredProps = (function () {
       this.querySelector('#next').style.display = 'inline';
     }
   };
-
   polymerTour.attachedCallback = function () {
-    this.changeRules();
+    this.init();
   };
 
-  polymerTour.changeRules = function () {
+  polymerTour.addDataToLocalstorage = function () {
+    var name, data;
+    if (arguments.length === 2) {
+      name = arguments[0];
+      data = arguments[1];
+      localStorage.setItem(name, JSON.stringify(data));
+    }
+
+  };
+
+  polymerTour.getFromLocalStorage = function () {
+    var origin, query, data;
+    if (arguments.length === 1) {
+      origin = arguments[0];
+    }
+    if (arguments.length === 2) {
+      origin = arguments[0];
+      query = arguments[1];
+    }
+    if (query) {
+      if (localStorage[origin]) {
+        data = JSON.parse(localStorage[origin])[query];
+      } else {
+        console.error('getFromLocalStorage()says: El atributo de "'+ origin + '" no esta definido en el localStorage');
+      }
+    } else {
+      if (localStorage[origin]) {
+        data = JSON.parse(localStorage[origin])
+      } else {
+        console.error('getFromLocalStorage()says: El atributo de "'+ origin + '" no esta definido en el localStorage');
+      }
+    }
+    return data;
+  };
+
+  polymerTour.init = function () {
+    this.registerElementActions();
+  };
+
+  polymerTour.registerElementActions = function () {
     var steps = this.children,
       polymertour = this;
-    this.currentSubStep = 0;
 
+    this.currentSubStep = 0;
     this.currentSteps = filter(steps, function (step) {
       return step.tagName === 'STEP-TOUR';
     });
 
-    this.currentStep = parseInt(localStorage.currentStep, 10) || 0;
+    this.currentStep = this.getFromLocalStorage(this.name, 'currentStep') || 0;
 
     this.countStep = this.currentSteps.length;
 

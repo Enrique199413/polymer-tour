@@ -50,7 +50,15 @@ html
       position: relative;
     }
   body
-    vainilla-tour(whit-labels='true')
+    vainilla-tour(whit-labels='true', name='tour1')
+      step-tour(value='Primer mensaje', for='examenesEmpresa', color='white', background='#F50057')
+      step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
+      step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
+      step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057', inherit)
+      step-tour(value='sin color y sin for')
+      step-tour(value='Para la columna', for='colum', color='white', background='#F50057')
+      step-tour(value='Para la imagen',for='image', color='white', background='#F50057')
+    vainilla-tour(whit-labels='true', name='tour2')
       step-tour(value='Primer mensaje', for='examenesEmpresa', color='white', background='#F50057')
       step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
       step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
@@ -92,3 +100,4 @@ html
           .card-actions
             paper-button#buttonone Button 1
             paper-button#buttontwo Button 2
+  script(src='polymer-tour.js')
