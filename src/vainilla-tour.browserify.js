@@ -274,7 +274,7 @@ var declaredProps = (function () {
   };
 
 
-  polymerTour.cleanBorders = function (indexForStep, last) {
+  polymerTour.cleanBorders = function (indexForStep) {
     if (indexForStep !== 0 && indexForStep !== -1 && this.currentSteps[indexForStep - 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep - 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep - 1].for).classList.remove('border');
@@ -323,7 +323,7 @@ var declaredProps = (function () {
         this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth;
       }
       if (newCoordinates.top + newCoordinates.height + currentHeight >= currentWindowHeight) {
-
+        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight;
       } else {
         this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight;
       }
@@ -331,7 +331,7 @@ var declaredProps = (function () {
       newCoordinates = {
         top: parseInt(currentWindowHeight / 2, 10),
         left: parseInt(currentWindowWidth / 2, 10) - (currentWidth / 2)
-      }
+      };
       this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left;
       this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top;
     }
@@ -347,11 +347,6 @@ var declaredProps = (function () {
   };
 
   polymerTour.nextStep = function (indexForStep) {
-    var currentWidth = window.innerWidth || document.body.clientWidth,
-      currentHeight = window.innerHeight || document.body.clientHeight,
-      widthElement = 400,
-      heightElement = 160,
-      suma;
     if (indexForStep < this.countStep) {
       this.parentCoordinates(this.currentSteps[indexForStep].for, indexForStep);
     }
