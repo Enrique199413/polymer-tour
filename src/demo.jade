@@ -51,6 +51,92 @@ html
       padding: 16px;
       position: relative;
     }
+    paper-card {
+      display: block;
+            position: relative;
+    }
+
+    paper-card[elevation="1"] {
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                      0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                      0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    paper-card[elevation="2"] {
+      box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+                      0 1px 10px 0 rgba(0, 0, 0, 0.12),
+                      0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    paper-card[elevation="3"] {
+      box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14),
+                      0 1px 18px 0 rgba(0, 0, 0, 0.12),
+                      0 3px 5px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    paper-card[elevation="4"] {
+      box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                      0 3px 14px 2px rgba(0, 0, 0, 0.12),
+                      0 5px 5px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    paper-card[elevation="5"] {
+      box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14),
+                      0  6px 30px 5px rgba(0, 0, 0, 0.12),
+                      0  8px 10px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    paper-card[animated] {
+      transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    paper-card {
+      display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            border-radius: 2px;font-family: 'Roboto', 'Noto', sans-serif;
+          -webkit-font-smoothing: antialiased;;
+    }
+
+    paper-card [hidden].paper-card {
+      display: none !important;
+    }
+
+    paper-card .header.paper-card {
+      position: relative;
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+            overflow: hidden;;
+    }
+
+    paper-card .header.paper-card iron-image.paper-card {
+      width: 100%;
+            pointer-events: none;;
+    }
+
+    paper-card .header.paper-card .title-text.paper-card {
+      padding: 16px;
+            font-size: 24px;
+            font-weight: 400;
+            color: white;;
+    }
+
+    paper-card .header.paper-card .title-text.over-image.paper-card {
+      position: absolute;
+            bottom: 0px;;
+    }
+
+    paper-card  .card-content {
+      padding: 16px;
+            position:relative;;
+    }
+
+    paper-card  .card-actions {
+      border-top: 1px solid #e8e8e8;
+            padding: 5px 16px;
+            position:relative;;
+    }
   body
     vainilla-tour(whit-labels='true', name='tour1')
       step-tour(value='Primer mensaje', for='examenesEmpresa', color='white', background='#F50057')
@@ -60,42 +146,29 @@ html
       step-tour(value='sin color y sin for')
       step-tour(value='Para la columna', for='left', color='white', background='#F50057')
       step-tour(value='Para la imagen',for='right', color='white', background='#F50057')
-    ikenga-container
-      ikenga-nav(color='#056A6F')
-        ikenga-menu-actions#examenesEmpresa(
-          home
-          title = 'Polymer Tour'
-        )
-        ikenga-icon-nav#image(icon="https://upload.wikimedia.org/wikipedia/commons/5/5c/Linus_Torvalds_(cropped).jpg", for="ikenga-menu", position="right")
-        ikenga-menu(position="right")
-          ikenga-item-menu(href='/logout') Cerrar sesión
-          ikenga-item-menu Términos y condiciones
-          ikenga-item-menu Avisos de privacidad
-          ikenga-item-menu Preguntas frecuentes
-          ikenga-item-menu Noticias
-      ikenga-content
-        div
-          div.left#left Enrique
-          div.right#right López
-        paper-card#paperCard(heading='Multi Tour Option 1')
-          .card-content Contenido
-          .card-actions
-            paper-button#buttonone Button 1
-            paper-button#buttontwo Button 2
-        paper-card#paperCard(heading='Multi Tour Option 2')
-          .card-content Contenido
-          .card-actions
-            paper-button#buttonone Button 1
-            paper-button#buttontwo Button 2
-        paper-card#paperCard(heading='Multi Tour Option 3')
-          .card-content Contenido
-          .card-actions
-            paper-button#buttonone Button 1
-            paper-button#buttontwo Button 2
-        paper-card#paperCard(heading='Multi Tour Option 4')
-          .card-content Contenido
-          .card-actions
-            paper-button#buttonone Button 1
-            paper-button#buttontwo Button 2
+    div
+      div.left#left EnriqueLC
+      div.right#right
+        a(href='https://twitter.com/_EnriqueLC', target='_blank') Follow Me
+    paper-card#paperCard(heading='Multi Tour Option 1')
+      .card-content Contenido
+      .card-actions
+        paper-button#buttonone Button 1
+        paper-button#buttontwo Button 2
+    paper-card#paperCard(heading='Multi Tour Option 2')
+      .card-content Contenido
+      .card-actions
+        paper-button#buttonone Button 1
+        paper-button#buttontwo Button 2
+    paper-card#paperCard(heading='Multi Tour Option 3')
+      .card-content Contenido
+      .card-actions
+        paper-button#buttonone Button 1
+        paper-button#buttontwo Button 2
+    paper-card#paperCard(heading='Multi Tour Option 4')
+      .card-content Contenido
+      .card-actions
+        paper-button#buttonone Button 1
+        paper-button#buttontwo Button 2
   script
     document.querySelector('vainilla-tour').init();
