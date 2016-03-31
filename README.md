@@ -10,14 +10,14 @@ Is a pure JS web-component for tour like [Bootstrap Tour](http://bootstraptour.c
 ``` bower install --save vainilla-tour ```
 
 ```html
-<vainilla-tour whit-labels='true' name='tourname' id='uniqueID'>
+<vainilla-tour with-labels='true' name='tourname' id='uniqueID'>
   <step-tour value='content visible' for='elementId' background='colorHEX' color='colorHEX'></step-tour>
 </vainilla-tour>
 ```
 ## `<vainilla-tour>` properties
 |property   | default | require  |  description |
 |---|---|---|---|
-|whit-labels   | false | no  |  show or hidde labels |
+|with-labels   | false | no  |  show or hidde labels |
 |name   |  | yes  |  name for unique when use multiple tours |
 
 
