@@ -375,9 +375,6 @@ var declaredProps = (function () {
       this.querySelector('#next').style.display = 'inline';
     }
   };
-  polymerTour.attachedCallback = function () {
-    this.init();
-  };
 
   polymerTour.addDataToLocalstorage = function () {
     var name, data, argumentos;
