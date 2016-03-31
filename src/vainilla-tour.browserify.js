@@ -228,7 +228,8 @@ var declaredProps = (function () {
 
   polymerTour.event = function (evento) {
     //validations is here
-    var data = {};
+    var data = {},
+      ultimo;
     switch (evento) {
     case 'next':
       if (this.currentStep !== this.countStep) {
@@ -261,18 +262,20 @@ var declaredProps = (function () {
       //console.log(this.currentStep);
       break;
     case 'end':
+      ultimo = this.currentStep;
+      this.cleanBorders(ultimo + 1);
+      this.hideAll();
       data.currentStep = -1;
       data.countStep = this.countStep;
       this.addDataToLocalstorage(this.name, data);
-      console.log('hidde all');
       break;
     }
     //console.log(this.currentSteps, this.countStep, this.currentStep);
   };
 
 
-  polymerTour.cleanBorders = function (indexForStep) {
-    if (indexForStep !== 0 && this.currentSteps[indexForStep - 1].for.length !== 0) {
+  polymerTour.cleanBorders = function (indexForStep, last) {
+    if (indexForStep !== 0 && indexForStep !== -1 && this.currentSteps[indexForStep - 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep - 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep - 1].for).classList.remove('border');
       }
@@ -286,13 +289,61 @@ var declaredProps = (function () {
 
   polymerTour.nextSubStep = function (indexForStep) {
     this.getLastItem = this.currentSteps[indexForStep - 1].children[this.currentSteps[indexForStep - 1].children.length - 1];
-
     this.getLastItem.style.opacity = 0;
-
-
     this.hijos[this.currentSubStep].children[0].style.opacity = 1;
     console.log('tiene subSteps', this.currentSubStep, this.hijos[this.currentSubStep].children[0]);
     this.currentSubStep = this.currentSubStep + 1;
+  };
+
+  polymerTour.parentCoordinates = function (element, indexForStep) {
+    var newCoordinates,
+      //divide in two beacuse get the center element
+      currentWidth = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
+      currentHeight = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
+      //get the current window coordinates
+      currentWindowWidth = window.innerWidth || document.body.clientWidth,
+      currentWindowHeight = window.innerHeight || document.body.clientHeight;
+
+    if (element && document.querySelector('#' + element) !== null) {
+      document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
+      document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
+      newCoordinates = {
+        top: document.querySelector('#' + element).getBoundingClientRect().top - currentHeight,
+        bottom: document.querySelector('#' + element).getBoundingClientRect().bottom,
+        left: document.querySelector('#' + element).getBoundingClientRect().left,
+        right: document.querySelector('#' + element).getBoundingClientRect().right,
+        width: document.querySelector('#' + element).getBoundingClientRect().width,
+        height: document.querySelector('#' + element).getBoundingClientRect().height
+      };
+      if (newCoordinates.left + currentWidth >= currentWindowWidth) {
+        this.currentSteps[indexForStep].parentNode.style.left = currentWindowWidth - currentWidth;
+      } else if (newCoordinates.left - currentWidth <= currentWindowWidth) {
+        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left;
+      } else {
+        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth;
+      }
+      if (newCoordinates.top + newCoordinates.height + currentHeight >= currentWindowHeight) {
+
+      } else {
+        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight;
+      }
+    } else {
+      newCoordinates = {
+        top: parseInt(currentWindowHeight / 2, 10),
+        left: parseInt(currentWindowWidth / 2, 10) - (currentWidth / 2)
+      }
+      this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left;
+      this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top;
+    }
+  };
+  polymerTour.changeColors = function (indexForStep) {
+    var color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black',
+      background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
+
+    this.currentSteps[indexForStep].parentNode.style.color = color;
+    this.currentSteps[indexForStep].parentNode.style.background = background;
+    this.currentSteps[indexForStep].parentNode.style.borderColor = background;
+    this.currentSteps[indexForStep].children[0].style.opacity = 1;
   };
 
   polymerTour.nextStep = function (indexForStep) {
@@ -302,71 +353,14 @@ var declaredProps = (function () {
       heightElement = 160,
       suma;
     if (indexForStep < this.countStep) {
-      if (this.currentSteps[indexForStep].for.length !== 0) {
-        if (document.querySelector('#' + this.currentSteps[indexForStep].for) !== null) {
-          document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
-          document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
-          if ((document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 120 > currentHeight) {
-            suma = heightElement + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height;
-            this.currentSteps[indexForStep].parentNode.style.top = 'calc(100% - ' + suma + 'px)';
-
-          } else {
-            this.currentSteps[indexForStep].parentNode.style.top = (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height) + 'px';
-            //document.styleSheets[0].deleteRule(0);
-          }
-          if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + widthElement > currentWidth) {
-            this.currentSteps[indexForStep].parentNode.style.left = 'calc(100% - 400px)';
-            //document.styleSheets[0].insertRule('vainilla-tour:before {left: calc(400px - 50px);}', 0);
-          } else if (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left < 0) {
-            //document.styleSheets[0].deleteRule(0);
-            this.currentSteps[indexForStep].parentNode.style.left = '0px';
-          } else {
-            //document.styleSheets[0].deleteRule(0);
-            this.currentSteps[indexForStep].parentNode.style.left = document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().left + 'px';
-          }
-          /*if (getComputedStyle(document.querySelector('#' + this.currentSteps[indexForStep].for)).getPropertyValue("position") !== 'fixed') {
-            //window.scrollTo(0, (document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().top + document.querySelector('#' + this.currentSteps[indexForStep].for).getBoundingClientRect().height));
-          }*/
-
-        } else {
-          console.error('El atributo "for" con el valor "' + this.currentSteps[indexForStep].for + '" no existe', this.currentSteps[indexForStep]);
-        }
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.top = '50%';
-        //this.currentSteps[indexForStep].parentNode.style.top = '20%';
-        this.currentSteps[indexForStep].parentNode.classList.add('ejemplo');
-
-        //this.currentSteps[indexForStep].parentNode.style.bottom = '0';
-        //this.currentSteps[indexForStep].parentNode.style.margin = '0 auto 0 auto';
-      }
+      this.parentCoordinates(this.currentSteps[indexForStep].for, indexForStep);
     }
-
     this.cleanBorders(indexForStep);
+    this.changeColors(indexForStep);
 
-
-    if (this.currentSteps[indexForStep].children.length > 1) {
-      this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
-      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
-      this.currentSteps[indexForStep].parentNode.style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-      this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-
-      this.currentSteps[indexForStep].children[this.currentSteps[indexForStep].children.length - 1].style.opacity = 1;
-    } else {
-      this.currentSteps[indexForStep].parentNode.style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
-      this.currentSteps[indexForStep].children[0].style.color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black';
-      this.currentSteps[indexForStep].parentNode.style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-      this.currentSteps[indexForStep].children[0].style.background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-      this.currentSteps[indexForStep].parentNode.style.borderColor = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
-
-      this.currentSteps[indexForStep].children[0].style.opacity = 1;
-    }
     if (this.currentLastStep !== undefined && this.currentSteps[this.currentLastStep] !== undefined) {
-      if (!this.subSteps) {
-        this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
-      }
+      this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
     }
-    //console.log(this.currentLastStep);
   };
 
   polymerTour.verificaBotones = function (indexForSteps) {
@@ -433,9 +427,14 @@ var declaredProps = (function () {
     this.registerElementActions();
   };
 
+  polymerTour.hideAll = function () {
+    this.style.opacity = 0;
+  };
+
   polymerTour.registerElementActions = function () {
     var steps = this.children,
       polymertour = this;
+
 
     this.currentSubStep = 0;
     this.currentSteps = filter(steps, function (step) {
@@ -446,16 +445,20 @@ var declaredProps = (function () {
 
     this.countStep = this.currentSteps.length;
 
-    if (this.countStep === 1) {
-      this.verificaBotones(-1);
-      setTimeout(function () {
-        polymertour.nextStep(0);
-      }, 10);
+    if (this.currentStep === -1) {
+      this.hideAll();
     } else {
-      this.verificaBotones(this.currentStep);
-      setTimeout(function () {
-        polymertour.nextStep(polymertour.currentStep);
-      }, 10);
+      if (this.countStep === 1) {
+        this.verificaBotones(-1);
+        setTimeout(function () {
+          polymertour.nextStep(0);
+        }, 10);
+      } else {
+        this.verificaBotones(this.currentStep);
+        setTimeout(function () {
+          polymertour.nextStep(polymertour.currentStep);
+        }, 10);
+      }
     }
   };
 

@@ -9,8 +9,6 @@ template#vainilla-tour
       height: auto;
       min-height: 120px;
       position: fixed;
-      top: 50%;
-      left: 0;
       display: inline-block;
       z-index: 10000000;
       box-sizing: border-box;
@@ -21,15 +19,7 @@ template#vainilla-tour
       -webkit-font-smoothing: antialiased;
       padding-top: 10px;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 0px 0 rgba(0, 0, 0, 0.12), 0 3px 0px -3px rgba(0, 0, 0, 0.2);
-      right: 0px;
       margin: 0 auto;
-    }
-    :host ::content .ejemplo {
-      margin: 0 auto;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
     }
     :host:before {
       z-index: 4;
@@ -46,7 +36,7 @@ template#vainilla-tour
       text-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 0px 0 rgba(0, 0, 0, 0.12), 0 3px 0px -3px rgba(0, 0, 0, 0.2);
     }
     :host ::content{
-      color: cyan;
+      color: inherit;
       text-align: center;
       min-height: 150px;
     }
@@ -86,7 +76,7 @@ template#step-tour
       display: table;
     }
     :host ::content div{
-      color: black;
+      color: inherit;
       opacity: 0;
       display: none;
       padding: 5px;
