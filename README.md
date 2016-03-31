@@ -56,6 +56,12 @@ After you clone Run these steps:
 
 `npm install` `bower install`
 
+### Change the Line 2 from `src/demo.jade`
+
+`link(rel='import', href='../dist/vainilla-tour.html')` to `link(rel='import', href='../src/vainilla-tour.html')`
+
+## Is very important if you view local changes
+
 ### run server
 
 `npm start`
