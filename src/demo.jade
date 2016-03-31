@@ -1,5 +1,5 @@
 html
-  link(rel='import', href='../dist/vainilla-tour.html')
+  link(rel='import', href='../src/vainilla-tour.html')
   style
     body {
       margin:0;
@@ -18,7 +18,12 @@ html
     .left {
       position: fixed;
       bottom: 16px;
-      left: 16px;src
+      left: 16px;
+    }
+    .right {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
     }
     .contenido {
       display: inline-block;
@@ -53,16 +58,8 @@ html
       step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
       step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057', inherit)
       step-tour(value='sin color y sin for')
-      step-tour(value='Para la columna', for='colum', color='white', background='#F50057')
-      step-tour(value='Para la imagen',for='image', color='white', background='#F50057')
-    vainilla-tour(whit-labels='true', name='tour2')
-      step-tour(value='Primer mensaje', for='paperCard', color='white', background='#F50057')
-      step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
-      step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
-      step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057', inherit)
-      step-tour(value='sin color y sin for')
-      step-tour(value='Para la columna', for='colum', color='white', background='#F50057')
-      step-tour(value='Para la imagen',for='image', color='white', background='#F50057')
+      step-tour(value='Para la columna', for='left', color='white', background='#F50057')
+      step-tour(value='Para la imagen',for='right', color='white', background='#F50057')
     ikenga-container
       ikenga-nav(color='#056A6F')
         ikenga-menu-actions#examenesEmpresa(
@@ -77,6 +74,9 @@ html
           ikenga-item-menu Preguntas frecuentes
           ikenga-item-menu Noticias
       ikenga-content
+        div
+          div.left#left Enrique
+          div.right#right López
         paper-card#paperCard(heading='Multi Tour Option 1')
           .card-content Contenido
           .card-actions
@@ -97,3 +97,5 @@ html
           .card-actions
             paper-button#buttonone Button 1
             paper-button#buttontwo Button 2
+  script
+    document.querySelector('vainilla-tour').init();

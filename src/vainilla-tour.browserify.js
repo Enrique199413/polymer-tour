@@ -313,19 +313,20 @@ var declaredProps = (function () {
         left: document.querySelector('#' + element).getBoundingClientRect().left,
         right: document.querySelector('#' + element).getBoundingClientRect().right,
         width: document.querySelector('#' + element).getBoundingClientRect().width,
-        height: document.querySelector('#' + element).getBoundingClientRect().height
+        height: document.querySelector('#' + element).getBoundingClientRect().height,
+        position: window.getComputedStyle(document.querySelector('#' + element), null).position
       };
+      if (newCoordinates.position === 'fixed') {
+        this.currentSteps[indexForStep].parentNode.style.top =  newCoordinates.bottom - newCoordinates.height - currentHeight + 'px';
+      } else {
+        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
+      }
       if (newCoordinates.left + currentWidth >= currentWindowWidth) {
         this.currentSteps[indexForStep].parentNode.style.left = currentWindowWidth - currentWidth + 'px';
       } else if (newCoordinates.left - currentWidth <= currentWindowWidth) {
         this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
       } else {
         this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth + 'px';
-      }
-      if (newCoordinates.top + newCoordinates.height + currentHeight >= currentWindowHeight) {
-        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top - newCoordinates.height - currentHeight + 'px';
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
       }
     } else {
       newCoordinates = {
