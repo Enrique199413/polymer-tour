@@ -316,24 +316,24 @@ var declaredProps = (function () {
         height: document.querySelector('#' + element).getBoundingClientRect().height
       };
       if (newCoordinates.left + currentWidth >= currentWindowWidth) {
-        this.currentSteps[indexForStep].parentNode.style.left = currentWindowWidth - currentWidth;
+        this.currentSteps[indexForStep].parentNode.style.left = currentWindowWidth - currentWidth + 'px';
       } else if (newCoordinates.left - currentWidth <= currentWindowWidth) {
-        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left;
+        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
       } else {
-        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth;
+        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth + 'px';
       }
       if (newCoordinates.top + newCoordinates.height + currentHeight >= currentWindowHeight) {
-        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight;
+        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top - newCoordinates.height - currentHeight + 'px';
       } else {
-        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight;
+        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
       }
     } else {
       newCoordinates = {
         top: parseInt(currentWindowHeight / 2, 10),
         left: parseInt(currentWindowWidth / 2, 10) - (currentWidth / 2)
       };
-      this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left;
-      this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top;
+      this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
+      this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + 'px';
     }
   };
   polymerTour.changeColors = function (indexForStep) {

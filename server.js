@@ -11,6 +11,7 @@ var express     = require('express'),
   pkg           = require('./package.json'),
   browserify    = require('browserify-middleware'),
   request       = require('request'),
+  cors          = require('cors'),
   baseRequest,
 
 // Create server
@@ -20,10 +21,12 @@ baseRequest = request.defaults({
   headers: { Accept : 'application/json,*/*' }
 });
 
+
 app.set('port', process.env.PORT || 3000);
 app.set('views', './src');
 app.set('view engine', 'jade');
 
+app.use(cors());
 app.use('/bower_components', express.static('./bower_components'));
 app.use('/dist', express.static('./dist'));
 

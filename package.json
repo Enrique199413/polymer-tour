@@ -21,5 +21,8 @@
   },
   "browserify-shim": {
     "jquery": "global:$"
+  },
+  "dependencies": {
+    "cors": "^2.7.1"
   }
 }
