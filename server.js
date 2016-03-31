@@ -63,7 +63,7 @@ app.get('/', function (req, res) {
     "initial-scale=1.0, user-scalable=yes\"><title>Polymer tour</title>",
     "<link rel=\"import\" href=\"/src/vainilla-tour.html\"></head>",
     "<script src=\"/bower_components/webcomponentsjs/webcomponents.min.js\"></script>",
-    "<body><vainilla-tour whit-labels=\"true\"><step-tour value=\"ads\"></step-tour><step-tour value=\"Enrique\"></step-tour></vainilla-tour></body></html>"
+    "<body><vainilla-tour with-labels=\"true\"><step-tour value=\"ads\"></step-tour><step-tour value=\"Enrique\"></step-tour></vainilla-tour></body></html>"
   ].join('');
   res.send(doc);
 

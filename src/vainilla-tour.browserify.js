@@ -163,7 +163,7 @@ var declaredProps = (function () {
   stepInnerTourProperties = stepTourProperties;
 
   polymerTourProperties = {
-    whitLabels: {
+    withLabels: {
       type: Boolean
     },
     name: {
@@ -201,7 +201,7 @@ var declaredProps = (function () {
       ],
       container = document.createElement('div'),
       polymertour = this,
-      labels = this.whitLabels,
+      labels = this.withLabels,
       buttonElement;
     buttons.forEach(function (button) {
       if (labels) {
