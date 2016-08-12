@@ -5,6 +5,17 @@ html
     body {
       margin:0;
     }
+    #vainilla-tour-backdrop {
+      background: rgba(0, 0, 0, 0.6);
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100001;
+    }
     paper-card {
       width: 100%;
     }
@@ -138,17 +149,45 @@ html
             padding: 5px 16px;
             position:relative;;
     }
+    .rightTop {
+      z-index: 2;
+      position: fixed;
+      border: none;
+      padding: 10px;
+      right:0;
+      background: #ededed !important;
+      color: black !important;
+      -webkit-transition: all ease-in-out 0.5s;
+      transition: all ease-in-out 0.5s;
+      top: 60px;
+    }
+    .leftTop {
+      top: 60px;
+      z-index: 2;
+      position: fixed;
+      left:0px;
+      border: none;
+      padding: 10px;
+      background: #ededed !important;
+      color: black !important;
+      -webkit-transition: all ease-in-out 0.5s;
+      transition: all ease-in-out 0.5s;
+    }
   body
     vainilla-tour(with-labels='true', name='tour1')
       step-tour(for='examenesEmpresa', color='white', background='#F50057')
       step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
       step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
-      step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057', inherit)
+      step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057')
       step-tour(value='Para la Fix Element', for='forFixed')
       step-tour(value='Para la columna', for='left', color='white', background='#F50057')
       step-tour(value='Para la imagen',for='right', color='white', background='#F50057')
+      step-tour(value='Arriba izquierda', for='rightTop', color='white', background='#F50057')
+      step-tour(value='Arriba derecha', for='leftTop', color='white', background='#F50057')
     #forFixed.fixed
     div
+      div.leftTop#leftTop LEFT TOP
+      div.rightTop#rightTop RIGHT TOP
       div.left#left EnriqueLC
       div.right#right
         a(href='https://twitter.com/_EnriqueLC', target='_blank') Follow Me

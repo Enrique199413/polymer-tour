@@ -278,11 +278,15 @@ var declaredProps = (function () {
     if (indexForStep !== 0 && indexForStep !== -1 && this.currentSteps[indexForStep - 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep - 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep - 1].for).classList.remove('border');
+        document.querySelector('#' + this.currentSteps[indexForStep - 1].for).style.zIndex = 1;
       }
     }
     if (indexForStep + 1 < this.countStep && this.currentSteps[indexForStep + 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep + 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep + 1].for).classList.remove('border');
+        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).style.zIndex = 1;
+        //console.log(this.currentSteps[indexForStep - 1].for);
+        //document.getElementById(this.currentSteps[indexForStep - 1].for).style.zIndex = 1;
       }
     }
   };
@@ -301,14 +305,21 @@ var declaredProps = (function () {
       //divide in two beacuse get the center element
       currentWidth = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
       currentHeight = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
+      backdrop,
       //get the current window coordinates
       currentWindowWidth = window.innerWidth || document.body.clientWidth,
       currentWindowHeight = window.innerHeight || document.body.clientHeight;
 
     if (element && document.querySelector('#' + element) !== null) {
+      if (document.body.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
+        backdrop = document.createElement('DIV');
+        backdrop.id = 'vainilla-tour-backdrop';
+        this.parentNode.insertBefore(backdrop, this);
+      }
       document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
       //Exception because is more easy remove classList
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
+      document.querySelector('#' + this.currentSteps[indexForStep].for).style.zIndex = 10000000;
 
       /*
       currentClientCoordinates = {
@@ -328,6 +339,8 @@ var declaredProps = (function () {
         height: document.querySelector('#' + element).getBoundingClientRect().height,
         position: window.getComputedStyle(document.querySelector('#' + element), null).position
       };
+
+      console.log('Elemento#', element, document.getElementById(element), newCoordinates);
       newCoordinates.autoHeight = newCoordinates.bottom - newCoordinates.height === 0 ? (newCoordinates.position === 'fixed' ? true : false) : false;
       if (newCoordinates.position === 'fixed') {
         if (!newCoordinates.autoHeight) {
@@ -342,6 +355,10 @@ var declaredProps = (function () {
         this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
       }
     } else {
+      if (document.body.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
+        //console.log('Enrique', document.querySelector('#' + this.currentSteps[indexForStep - 1].for));
+        document.body.removeChild(document.body.querySelector('#vainilla-tour-backdrop'));
+      }
       newCoordinates = {
         top: parseInt(currentWindowHeight / 2, 10),
         left: parseInt(currentWindowWidth / 2, 10) - (currentWidth / 2)
