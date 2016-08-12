@@ -309,17 +309,22 @@ var declaredProps = (function () {
       //get the current window coordinates
       currentWindowWidth = window.innerWidth || document.body.clientWidth,
       currentWindowHeight = window.innerHeight || document.body.clientHeight;
-
+    //console.log('Is current', this.currentSteps[indexForStep].parentNode);
     if (element && document.querySelector('#' + element) !== null) {
+
       if (document.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
         this.parentNode.insertBefore(backdrop, this);
       }
       document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
-      //Exception because is more easy remove classList
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
       document.querySelector('#' + this.currentSteps[indexForStep].for).style.zIndex = 10000000;
+
+      this.getCurrentPositionForInWindow(element);
+      this.getRulesTourPosition(indexForStep);
+      this.validateCurrentCoordinatesElementFor(indexForStep);
+      //Exception because is more easy remove classList
 
       /*
       currentClientCoordinates = {
@@ -340,9 +345,9 @@ var declaredProps = (function () {
         position: window.getComputedStyle(document.querySelector('#' + element), null).position
       };
 
-      console.log('Elemento#', element, document.getElementById(element), newCoordinates);
+      //console.log('Elemento#', element, document.getElementById(element), newCoordinates);
       newCoordinates.autoHeight = newCoordinates.bottom - newCoordinates.height === 0 ? (newCoordinates.position === 'fixed' ? true : false) : false;
-      if (newCoordinates.position === 'fixed') {
+      /*if (newCoordinates.position === 'fixed') {
         if (!newCoordinates.autoHeight) {
           this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top - (newCoordinates.height * 2) + 'px';
           this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
@@ -353,7 +358,7 @@ var declaredProps = (function () {
       } else {
         this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
         this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
-      }
+      }*/
     } else {
       if (document.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
         //console.log('Enrique', document.querySelector('#' + this.currentSteps[indexForStep - 1].for));
@@ -367,6 +372,88 @@ var declaredProps = (function () {
       this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + 'px';
     }
   };
+
+
+  polymerTour.getCurrentPositionForInWindow = function (element) {
+    var elementForCoordinates;
+
+    elementForCoordinates = {
+      top: document.getElementById(element).getBoundingClientRect().top,
+      bottom: document.getElementById(element).getBoundingClientRect().bottom,
+      left: document.getElementById(element).getBoundingClientRect().left,
+      right: document.getElementById(element).getBoundingClientRect().right,
+      width: document.getElementById(element).getBoundingClientRect().width,
+      height: document.getElementById(element).getBoundingClientRect().height,
+      topSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).top.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).top.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).top,
+      bottomSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).bottom.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).bottom.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).bottom,
+      leftSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).left.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).left.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).left,
+      rightSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).right.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).right.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).right,
+      widthSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).width.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).width.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).width,
+      heightSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).height.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).height.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).height,
+      position: window.getComputedStyle(document.getElementById(element), null).position
+    };
+
+    this.coordinatesForElement = elementForCoordinates;
+  };
+
+  polymerTour.getRulesTourPosition = function (indexForStep) {
+    var elementCoordinates, windowCoordinates;
+
+    elementCoordinates = {
+      width: this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
+      height: this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
+      marginElemnt: 4// sum 8 per height and width
+    };
+
+    windowCoordinates = {
+      middlePointX: (window.innerWidth / 2),
+      middlePointY: (window.innerHeight / 2),
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+
+    this.tourSizes = elementCoordinates;
+    this.windowScreen = windowCoordinates;
+  };
+
+  polymerTour.validateCurrentCoordinatesElementFor = function (indexForStep) {
+    //Check for window Visibility
+    //Pull right - ******************* REMOVE FOR LEFT AND RIGHT VALIDATIONS
+
+
+    //this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.left + this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+    if ((this.coordinatesForElement.top + this.coordinatesForElement.height + this.tourSizes.height) > this.windowScreen.height) {
+      this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY - (this.tourSizes.height / 2) + 'px';
+      //console.log('el elemnto ya no se ve en pantalla se centra');
+    } else {
+      if ((this.coordinatesForElement.top + this.coordinatesForElement.height) > this.windowScreen.middlePointY) {
+        this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top - this.tourSizes.height + 'px';
+      } else {
+        this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top + this.coordinatesForElement.height + 'px';
+      }
+    }
+
+
+    if ((this.coordinatesForElement.leftSE + this.coordinatesForElement.width - this.tourSizes.width) > this.windowScreen.width) {
+      //console.log('el elemnto ya no se ve en pantalla se centra');
+      this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.middlePointX - (this.tourSizes.width / 2) + 'px';
+    } else {
+      //console.log('el elemento SE Alcanza a ver en pantalla', this.coordinatesForElement.width + this.coordinatesForElement.right - this.tourSizes.width, this.windowScreen.middlePointX);
+      if (this.windowScreen.width === this.coordinatesForElement.width) {
+        //the For element is width 100% or the same size from window
+        this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.middlePointX - (this.tourSizes.width / 2) + 'px';
+      } else if ((this.coordinatesForElement.right + this.coordinatesForElement.width) > this.windowScreen.middlePointX) {
+        //console.log('Esta a la derecha');
+        this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.width - this.coordinatesForElement.width - this.tourSizes.width - this.coordinatesForElement.rightSE + 'px';
+      } else {
+        //console.log('Esta a la izquierda');
+        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.left + this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+        //this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top + this.coordinatesForElement.height + 'px';
+      }
+    }
+
+  };
+
   polymerTour.verifyLeftRightBorder = function verifyLeftRightBorder(left, currentWidth, currentWindowWidth, element) {
     if (left + currentWidth >= currentWindowWidth) {
       element.parentNode.style.left = currentWindowWidth - currentWidth + 'px';
