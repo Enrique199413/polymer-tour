@@ -297,6 +297,7 @@ var declaredProps = (function () {
 
   polymerTour.parentCoordinates = function (element, indexForStep) {
     var newCoordinates,
+      //that = this,
       //divide in two beacuse get the center element
       currentWidth = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
       currentHeight = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
@@ -306,7 +307,18 @@ var declaredProps = (function () {
 
     if (element && document.querySelector('#' + element) !== null) {
       document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
+      //Exception because is more easy remove classList
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
+
+      /*
+      currentClientCoordinates = {
+        currentWidth: that.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
+        currentHeight: that.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
+        currentWindowWidth: window.innerWidth || document.body.clientWidth,
+        currentWindowHeight: window.innerHeight || document.body.clientHeight
+      };
+      */
+
       newCoordinates = {
         top: document.querySelector('#' + element).getBoundingClientRect().top - currentHeight,
         bottom: document.querySelector('#' + element).getBoundingClientRect().bottom,
@@ -316,17 +328,18 @@ var declaredProps = (function () {
         height: document.querySelector('#' + element).getBoundingClientRect().height,
         position: window.getComputedStyle(document.querySelector('#' + element), null).position
       };
+      newCoordinates.autoHeight = newCoordinates.bottom - newCoordinates.height === 0 ? (newCoordinates.position === 'fixed' ? true : false) : false;
       if (newCoordinates.position === 'fixed') {
-        this.currentSteps[indexForStep].parentNode.style.top =  newCoordinates.bottom - newCoordinates.height - currentHeight + 'px';
+        if (!newCoordinates.autoHeight) {
+          this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top - (newCoordinates.height * 2) + 'px';
+          this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
+        } else {
+          this.currentSteps[indexForStep].parentNode.style.top =  (currentWindowHeight / 2) - (currentHeight / 2) + 'px';
+          this.currentSteps[indexForStep].parentNode.style.left =  newCoordinates.width + newCoordinates.left + 'px';
+        }
       } else {
         this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
-      }
-      if (newCoordinates.left + currentWidth >= currentWindowWidth) {
-        this.currentSteps[indexForStep].parentNode.style.left = currentWindowWidth - currentWidth + 'px';
-      } else if (newCoordinates.left - currentWidth <= currentWindowWidth) {
-        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left - currentWidth + 'px';
+        this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
       }
     } else {
       newCoordinates = {
@@ -335,6 +348,15 @@ var declaredProps = (function () {
       };
       this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
       this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + 'px';
+    }
+  };
+  polymerTour.verifyLeftRightBorder = function verifyLeftRightBorder(left, currentWidth, currentWindowWidth, element) {
+    if (left + currentWidth >= currentWindowWidth) {
+      element.parentNode.style.left = currentWindowWidth - currentWidth + 'px';
+    } else if (left - currentWidth <= currentWindowWidth) {
+      element.parentNode.style.left = left + 'px';
+    } else {
+      element.parentNode.style.left = left - currentWidth + 'px';
     }
   };
   polymerTour.changeColors = function (indexForStep) {
