@@ -311,7 +311,7 @@ var declaredProps = (function () {
       currentWindowHeight = window.innerHeight || document.body.clientHeight;
 
     if (element && document.querySelector('#' + element) !== null) {
-      if (document.body.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
+      if (document.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
         this.parentNode.insertBefore(backdrop, this);
@@ -355,9 +355,9 @@ var declaredProps = (function () {
         this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
       }
     } else {
-      if (document.body.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
+      if (document.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
         //console.log('Enrique', document.querySelector('#' + this.currentSteps[indexForStep - 1].for));
-        document.body.removeChild(document.body.querySelector('#vainilla-tour-backdrop'));
+        document.removeChild(document.body.querySelector('#vainilla-tour-backdrop'));
       }
       newCoordinates = {
         top: parseInt(currentWindowHeight / 2, 10),
