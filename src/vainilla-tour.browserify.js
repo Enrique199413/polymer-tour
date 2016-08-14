@@ -372,14 +372,22 @@ var declaredProps = (function () {
     //Check for window Visibility
     this.getCurrentPositionForInWindow(element);
     this.getRulesTourPosition(indexForStep);
-
+    //console.log(this.coordinatesForElement, this.windowScreen, this.tourSizes);
     if (this.coordinatesForElement.left > this.windowScreen.middlePointX) {
       this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
       this.currentSteps[indexForStep].parentNode.style.left = 'initial';
+      if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
+        this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width - this.tourSizes.width + 'px';
+      }
     } else {
       this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
       this.currentSteps[indexForStep].parentNode.style.right = 'initial';
+      if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
+        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width - this.tourSizes.width + 'px';
+      }
     }
+
+
 
     if ((this.coordinatesForElement.top + this.coordinatesForElement.height + this.tourSizes.height) > this.windowScreen.height) {
       this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY - (this.tourSizes.height / 2) + 'px';
