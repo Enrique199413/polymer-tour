@@ -2,7 +2,11 @@
 /*jslint nomen: true */
 /*global document, window, localStorage, getComputedStyle*/
 'use strict';
-var filter = Function.prototype.call.bind(Array.prototype.filter);
+var filter = Function.prototype.call.bind(Array.prototype.filter),
+  forEach;
+
+forEach = Function.prototype.call.bind(Array.prototype.forEach);
+
 var addShadowRoot = (function () {
   var importDoc, shimStyle;
 
@@ -291,119 +295,65 @@ var declaredProps = (function () {
     }
   };
 
-  polymerTour.nextSubStep = function (indexForStep) {
-    this.getLastItem = this.currentSteps[indexForStep - 1].children[this.currentSteps[indexForStep - 1].children.length - 1];
-    this.getLastItem.style.opacity = 0;
-    this.hijos[this.currentSubStep].children[0].style.opacity = 1;
-    console.log('tiene subSteps', this.currentSubStep, this.hijos[this.currentSubStep].children[0]);
-    this.currentSubStep = this.currentSubStep + 1;
-  };
-
   polymerTour.parentCoordinates = function (element, indexForStep) {
-    var newCoordinates,
-      //that = this,
-      //divide in two beacuse get the center element
-      currentWidth = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
-      currentHeight = this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
-      backdrop,
-      //get the current window coordinates
-      currentWindowWidth = window.innerWidth || document.body.clientWidth,
-      currentWindowHeight = window.innerHeight || document.body.clientHeight;
-    //console.log('Is current', this.currentSteps[indexForStep].parentNode);
-    if (element && document.querySelector('#' + element) !== null) {
+    var backdrop,
+      that = this;
 
+    if (element && document.querySelector('#' + element) !== null) {
       if (document.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
         this.parentNode.insertBefore(backdrop, this);
+        //document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
       }
-      document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
       document.querySelector('#' + this.currentSteps[indexForStep].for).style.zIndex = 10000000;
 
-      this.getCurrentPositionForInWindow(element);
-      this.getRulesTourPosition(indexForStep);
-      this.validateCurrentCoordinatesElementFor(indexForStep);
-      //Exception because is more easy remove classList
-
-      /*
-      currentClientCoordinates = {
-        currentWidth: that.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
-        currentHeight: that.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
-        currentWindowWidth: window.innerWidth || document.body.clientWidth,
-        currentWindowHeight: window.innerHeight || document.body.clientHeight
-      };
-      */
-
-      newCoordinates = {
-        top: document.querySelector('#' + element).getBoundingClientRect().top - currentHeight,
-        bottom: document.querySelector('#' + element).getBoundingClientRect().bottom,
-        left: document.querySelector('#' + element).getBoundingClientRect().left,
-        right: document.querySelector('#' + element).getBoundingClientRect().right,
-        width: document.querySelector('#' + element).getBoundingClientRect().width,
-        height: document.querySelector('#' + element).getBoundingClientRect().height,
-        position: window.getComputedStyle(document.querySelector('#' + element), null).position
-      };
-
-      //console.log('Elemento#', element, document.getElementById(element), newCoordinates);
-      newCoordinates.autoHeight = newCoordinates.bottom - newCoordinates.height === 0 ? (newCoordinates.position === 'fixed' ? true : false) : false;
-      /*if (newCoordinates.position === 'fixed') {
-        if (!newCoordinates.autoHeight) {
-          this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top - (newCoordinates.height * 2) + 'px';
-          this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
-        } else {
-          this.currentSteps[indexForStep].parentNode.style.top =  (currentWindowHeight / 2) - (currentHeight / 2) + 'px';
-          this.currentSteps[indexForStep].parentNode.style.left =  newCoordinates.width + newCoordinates.left + 'px';
-        }
-      } else {
-        this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + newCoordinates.height + currentHeight + 'px';
-        this.verifyLeftRightBorder(newCoordinates.left, currentWidth, currentWindowWidth, this.currentSteps[indexForStep]);
-      }*/
+      this.validateCurrentCoordinatesElementFor(element, indexForStep);
     } else {
-      if (document.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
-        //console.log('Enrique', document.querySelector('#' + this.currentSteps[indexForStep - 1].for));
-        document.removeChild(document.body.querySelector('#vainilla-tour-backdrop'));
-      }
-      newCoordinates = {
-        top: parseInt(currentWindowHeight / 2, 10),
-        left: parseInt(currentWindowWidth / 2, 10) - (currentWidth / 2)
-      };
-      this.currentSteps[indexForStep].parentNode.style.left = newCoordinates.left + 'px';
-      this.currentSteps[indexForStep].parentNode.style.top = newCoordinates.top + 'px';
+      this.removeBackDrop();
+      setTimeout(function () {
+        that.getRulesTourPosition(indexForStep);
+        that.currentSteps[indexForStep].parentNode.style.left = that.windowScreen.middlePointX - (that.tourSizes.width / 2) + 'px';
+        that.currentSteps[indexForStep].parentNode.style.top = that.windowScreen.middlePointY - (that.tourSizes.height / 2) + 'px';
+      }, 0);
     }
   };
 
+  polymerTour.removeBackDrop = function () {
+    if (document.querySelectorAll('#vainilla-tour-backdrop').length === 1) {
+      this.parentNode.removeChild(document.getElementById('vainilla-tour-backdrop'));
+    }
+  };
+
+  polymerTour.compareAndGetCoordinate = function (coordinate, element) {
+    var coordinateComputed,
+      coordinateBounding;
+
+    coordinateBounding = document.getElementById(element).getBoundingClientRect()[coordinate];
+    coordinateComputed = !isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null)[coordinate].replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null)[coordinate].replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null)[coordinate];
+
+    return coordinateBounding < coordinateComputed ? coordinateComputed : coordinateBounding;
+  };
 
   polymerTour.getCurrentPositionForInWindow = function (element) {
     var elementForCoordinates;
 
     elementForCoordinates = {
-      top: document.getElementById(element).getBoundingClientRect().top,
-      bottom: document.getElementById(element).getBoundingClientRect().bottom,
-      left: document.getElementById(element).getBoundingClientRect().left,
-      right: document.getElementById(element).getBoundingClientRect().right,
-      width: document.getElementById(element).getBoundingClientRect().width,
-      height: document.getElementById(element).getBoundingClientRect().height,
-      topSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).top.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).top.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).top,
-      bottomSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).bottom.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).bottom.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).bottom,
-      leftSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).left.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).left.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).left,
-      rightSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).right.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).right.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).right,
-      widthSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).width.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).width.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).width,
-      heightSE: isNaN(parseInt(window.getComputedStyle(document.getElementById(element), null).height.replace("px", ""), 10)) ?  parseInt(window.getComputedStyle(document.getElementById(element), null).height.replace("px", ""), 10) : window.getComputedStyle(document.getElementById(element), null).height,
+      top: this.compareAndGetCoordinate('top', element),
+      left: this.compareAndGetCoordinate('left', element),
+      right: this.compareAndGetCoordinate('right', element),
+      bottom: this.compareAndGetCoordinate('bottom', element),
+      height: this.compareAndGetCoordinate('height', element),
+      width: this.compareAndGetCoordinate('width', element),
       position: window.getComputedStyle(document.getElementById(element), null).position
     };
-
     this.coordinatesForElement = elementForCoordinates;
   };
 
   polymerTour.getRulesTourPosition = function (indexForStep) {
-    var elementCoordinates, windowCoordinates;
+    var elementCoordinates, windowCoordinates, that = this;
 
-    elementCoordinates = {
-      width: this.currentSteps[indexForStep].parentNode.getBoundingClientRect().width,
-      height: this.currentSteps[indexForStep].parentNode.getBoundingClientRect().height,
-      marginElemnt: 4// sum 8 per height and width
-    };
 
     windowCoordinates = {
       middlePointX: (window.innerWidth / 2),
@@ -412,16 +362,25 @@ var declaredProps = (function () {
       height: window.innerHeight
     };
 
+    elementCoordinates = that.currentSteps[indexForStep].parentNode.getBoundingClientRect();
+    elementCoordinates.marginElemnt = 4;
     this.tourSizes = elementCoordinates;
     this.windowScreen = windowCoordinates;
   };
 
-  polymerTour.validateCurrentCoordinatesElementFor = function (indexForStep) {
+  polymerTour.validateCurrentCoordinatesElementFor = function (element, indexForStep) {
     //Check for window Visibility
-    //Pull right - ******************* REMOVE FOR LEFT AND RIGHT VALIDATIONS
+    this.getCurrentPositionForInWindow(element);
+    this.getRulesTourPosition(indexForStep);
 
+    if (this.coordinatesForElement.left > this.windowScreen.middlePointX) {
+      this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+      this.currentSteps[indexForStep].parentNode.style.left = 'initial';
+    } else {
+      this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+      this.currentSteps[indexForStep].parentNode.style.right = 'initial';
+    }
 
-    //this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.left + this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
     if ((this.coordinatesForElement.top + this.coordinatesForElement.height + this.tourSizes.height) > this.windowScreen.height) {
       this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY - (this.tourSizes.height / 2) + 'px';
       //console.log('el elemnto ya no se ve en pantalla se centra');
@@ -433,36 +392,8 @@ var declaredProps = (function () {
       }
     }
 
-
-    if ((this.coordinatesForElement.leftSE + this.coordinatesForElement.width - this.tourSizes.width) > this.windowScreen.width) {
-      //console.log('el elemnto ya no se ve en pantalla se centra');
-      this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.middlePointX - (this.tourSizes.width / 2) + 'px';
-    } else {
-      //console.log('el elemento SE Alcanza a ver en pantalla', this.coordinatesForElement.width + this.coordinatesForElement.right - this.tourSizes.width, this.windowScreen.middlePointX);
-      if (this.windowScreen.width === this.coordinatesForElement.width) {
-        //the For element is width 100% or the same size from window
-        this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.middlePointX - (this.tourSizes.width / 2) + 'px';
-      } else if ((this.coordinatesForElement.right + this.coordinatesForElement.width) > this.windowScreen.middlePointX) {
-        //console.log('Esta a la derecha');
-        this.currentSteps[indexForStep].parentNode.style.left = this.windowScreen.width - this.coordinatesForElement.width - this.tourSizes.width - this.coordinatesForElement.rightSE + 'px';
-      } else {
-        //console.log('Esta a la izquierda');
-        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.left + this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
-        //this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top + this.coordinatesForElement.height + 'px';
-      }
-    }
-
   };
 
-  polymerTour.verifyLeftRightBorder = function verifyLeftRightBorder(left, currentWidth, currentWindowWidth, element) {
-    if (left + currentWidth >= currentWindowWidth) {
-      element.parentNode.style.left = currentWindowWidth - currentWidth + 'px';
-    } else if (left - currentWidth <= currentWindowWidth) {
-      element.parentNode.style.left = left + 'px';
-    } else {
-      element.parentNode.style.left = left - currentWidth + 'px';
-    }
-  };
   polymerTour.changeColors = function (indexForStep) {
     var color = this.currentSteps[indexForStep].color.length !== 0 ? this.currentSteps[indexForStep].color : 'black',
       background = this.currentSteps[indexForStep].background.length !== 0 ? this.currentSteps[indexForStep].background : 'white';
@@ -471,17 +402,28 @@ var declaredProps = (function () {
     this.currentSteps[indexForStep].parentNode.style.background = background;
     this.currentSteps[indexForStep].parentNode.style.borderColor = background;
     this.currentSteps[indexForStep].children[0].style.opacity = 1;
+    this.currentSteps[indexForStep].children[0].style.display = 'block';
   };
 
   polymerTour.nextStep = function (indexForStep) {
+    var that = this;
+
+    forEach(that.currentSteps, function (step) {
+      step.children[0].style.display = 'none';
+    });
     if (indexForStep < this.countStep) {
-      this.parentCoordinates(this.currentSteps[indexForStep].for, indexForStep);
+      that.currentSteps[indexForStep].style.display = 'inline';
+      this.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep);
+      window.addEventListener('resize', function () {
+        that.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep);
+      });
     }
     this.cleanBorders(indexForStep);
     this.changeColors(indexForStep);
 
     if (this.currentLastStep !== undefined && this.currentSteps[this.currentLastStep] !== undefined) {
       this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
+      this.currentSteps[this.currentLastStep].children[0].style.display = 'none';
     }
   };
 
@@ -548,6 +490,7 @@ var declaredProps = (function () {
 
   polymerTour.hideAll = function () {
     this.style.opacity = 0;
+    this.removeBackDrop();
   };
 
   polymerTour.registerElementActions = function () {
@@ -585,9 +528,15 @@ var declaredProps = (function () {
     addShadowRoot(this, 'step-tour');
   };
 
-  stepTour.createElement = function (description) {
+  stepTour.createElement = function () {
     var div = document.createElement('div');
-    div.innerHTML = description;
+
+    forEach(this.children, function (child) {
+      setTimeout(function () {
+        div.appendChild(child);
+      }, 0);
+    });
+    //div.innerHTML = description;
     this.appendChild(div);
   };
 

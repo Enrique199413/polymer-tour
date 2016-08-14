@@ -182,11 +182,22 @@ html
       -webkit-transition: all ease-in-out 0.5s;
       transition: all ease-in-out 0.5s;
     }
+    .title {
+      font-size: 20pt;
+      margin: 0;
+      text-align: center;
+    }
   body
     .rule
     vainilla-tour(with-labels='true', name='tour1')
       step-tour(for='examenesEmpresa', color='white', background='#F50057')
+        p.title Bienvenido!
+        span Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       step-tour(value='No tiene la propiedad "for" por lo tanto debería de estar en el centro', color='white', background='#00ACC1')
+        span EnriqueLC
+        p EnriqueLC2
+        span EnriqueLC
+        p EnriqueLC2
       step-tour(value='Para la tabla', for='paperCard', color='white', background='#F50057')
       step-tour(value='Para la tabla adentro', for='buttonone', color='white', background='#F50057')
       step-tour(value='Para la Fix Element', for='forFixed')

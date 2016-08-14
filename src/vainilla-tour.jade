@@ -5,9 +5,9 @@ template#vainilla-tour
     :host {
       -webkit-transition: all ease 0.5s;
       transition: all ease 0.5s;
-      width: 400px;
+      min-width: 400px;
+      max-width: 500px;
       height: auto;
-      min-height: 120px;
       position: fixed;
       display: inline-block;
       z-index: 10000000;
@@ -16,7 +16,6 @@ template#vainilla-tour
       border-radius: 2px;
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      padding-top: 10px;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 0px 0 rgba(0, 0, 0, 0.12), 0 3px 0px -3px rgba(0, 0, 0, 0.2);
       margin: 0 auto;
     }
@@ -46,12 +45,8 @@ template#vainilla-tour
       padding: 0.7em 0.57em;
     }
     :host ::content .buttons {
-      border-top: 1px solid #e8e8e8;
-      width: 400px;
-      position: absolute;
-      bottom: 0px;
+      width: inherit;
       text-align: center;
-      padding-top: 10px;
       padding-bottom: 10px;
     }
   content
@@ -59,21 +54,19 @@ template#step-tour
   style
     :host {
       display: table;
+      width: inherit;
     }
     :host ::content div{
       color: inherit;
       opacity: 0;
       display: none;
-      padding: 5px;
+      padding-top: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 10px;
       display: table-cell;
       vertical-align: middle;
-      text-align: center;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-      left: 0;
-      right: 0;
+      width: inherit;
     }
   content
 template#step-inner-tour
