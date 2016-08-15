@@ -179,6 +179,22 @@ var declaredProps = (function () {
     addShadowRoot(this, 'vainilla-tour');
     declaredProps.init(this, polymerTourProperties);
     this.createButtons();
+
+  };
+
+  polymerTour.savePreferencesForSteps = function () {
+    var that = this,
+      objTmp = {};
+
+
+    forEach(that.currentSteps, function (step) {
+      if (step.for.length !== 0 && document.getElementById(step.for) !== null) {
+        objTmp[step.for] = (isNaN(parseInt(window.getComputedStyle(document.getElementById(step.for), null).zIndex, 10)) ? '' : parseInt(window.getComputedStyle(document.getElementById(step.for), null).zIndex, 10));
+      }
+    });
+
+    this.overlapingValue = objTmp;
+    //this.addDataToLocalstorage(this.name, data);
   };
 
   polymerTour.createButtons = function () {
@@ -282,13 +298,13 @@ var declaredProps = (function () {
     if (indexForStep !== 0 && indexForStep !== -1 && this.currentSteps[indexForStep - 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep - 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep - 1].for).classList.remove('border');
-        document.querySelector('#' + this.currentSteps[indexForStep - 1].for).style.zIndex = 1;
+        document.querySelector('#' + this.currentSteps[indexForStep - 1].for).style.zIndex = this.overlapingValue[this.currentSteps[indexForStep - 1].for];
       }
     }
     if (indexForStep + 1 < this.countStep && this.currentSteps[indexForStep + 1].for.length !== 0) {
       if (document.querySelector('#' + this.currentSteps[indexForStep + 1].for) !== null) {
         document.querySelector('#' + this.currentSteps[indexForStep + 1].for).classList.remove('border');
-        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).style.zIndex = 1;
+        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).style.zIndex = this.overlapingValue[this.currentSteps[indexForStep + 1].for];
         //console.log(this.currentSteps[indexForStep - 1].for);
         //document.getElementById(this.currentSteps[indexForStep - 1].for).style.zIndex = 1;
       }
@@ -304,8 +320,9 @@ var declaredProps = (function () {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
         this.parentNode.insertBefore(backdrop, this);
-        //document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ';}', 0);
+        document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ' !important;}', 0);
       }
+
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
       document.querySelector('#' + this.currentSteps[indexForStep].for).style.zIndex = 10000000;
 
@@ -422,9 +439,6 @@ var declaredProps = (function () {
     if (indexForStep < this.countStep) {
       that.currentSteps[indexForStep].style.display = 'inline';
       this.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep);
-      window.addEventListener('resize', function () {
-        that.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep);
-      });
     }
     this.cleanBorders(indexForStep);
     this.changeColors(indexForStep);
@@ -493,7 +507,12 @@ var declaredProps = (function () {
   };
 
   polymerTour.init = function () {
+    var that = this;
     this.registerElementActions();
+    this.savePreferencesForSteps();
+    window.addEventListener('resize', function () {
+      that.parentCoordinates(that.currentSteps[that.currentStep].for, that.currentStep);
+    });
   };
 
   polymerTour.hideAll = function () {
@@ -504,7 +523,6 @@ var declaredProps = (function () {
   polymerTour.registerElementActions = function () {
     var steps = this.children,
       polymertour = this;
-
 
     this.currentSubStep = 0;
     this.currentSteps = filter(steps, function (step) {
