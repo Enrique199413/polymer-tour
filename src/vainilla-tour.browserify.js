@@ -320,10 +320,10 @@ var declaredProps = (function () {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
         this.parentNode.insertBefore(backdrop, this);
-        document.styleSheets[0].insertRule('.border {border:2px solid ' + this.currentSteps[indexForStep].background + ' !important;}', 0);
       }
 
       document.querySelector('#' + this.currentSteps[indexForStep].for).classList.add('border');
+      document.querySelector('#' + this.currentSteps[indexForStep].for).style.borderColor = this.currentSteps[indexForStep].background;
       document.querySelector('#' + this.currentSteps[indexForStep].for).style.zIndex = 10000000;
 
       this.validateCurrentCoordinatesElementFor(element, indexForStep);
