@@ -302,20 +302,38 @@ var declaredProps = (function () {
       }
     }
     if (indexForStep + 1 < this.countStep && this.currentSteps[indexForStep + 1].for.length !== 0) {
-      if (document.querySelector('#' + this.currentSteps[indexForStep + 1].for) !== null) {
-        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).classList.remove('border');
-        document.querySelector('#' + this.currentSteps[indexForStep + 1].for).style.zIndex = this.overlapingValue[this.currentSteps[indexForStep + 1].for];
+      if (document.getElementById(this.currentSteps[indexForStep + 1].for) !== null) {
+        document.getElementById(this.currentSteps[indexForStep + 1].for).classList.remove('border');
+        document.getElementById(this.currentSteps[indexForStep + 1].for).style.zIndex = this.overlapingValue[this.currentSteps[indexForStep + 1].for];
         //console.log(this.currentSteps[indexForStep - 1].for);
         //document.getElementById(this.currentSteps[indexForStep - 1].for).style.zIndex = 1;
       }
     }
   };
 
-  polymerTour.parentCoordinates = function (element, indexForStep) {
+  polymerTour.parentCoordinates = function (element, indexForStep, width) {
     var backdrop,
-      that = this;
+      that = this,
+      paragraph = document.createElement('p');
 
-    if (element && document.querySelector('#' + element) !== null) {
+    paragraph.innerHTML = 'Tu pantalla es demasiado pequeña para mostrar correctamente el Tour';
+    if (width < 769) {
+      this.currentSaveContent = that.currentSteps[indexForStep];
+      that.currentSteps[indexForStep].children[0].style.opacity = '0';
+      that.currentSteps[indexForStep].children[0].style.display = 'none';
+      if (that.currentSteps[indexForStep].children.length === 1) {
+        that.currentSteps[indexForStep].appendChild(paragraph);
+      }
+    } else {
+      //that.currentSteps[indexForStep].innerHTML = this.currentSaveContent.toString();
+      if (that.currentSteps[indexForStep].children.length === 2) {
+        that.currentSteps[indexForStep].removeChild(that.currentSteps[indexForStep].children[1]);
+      }
+      that.currentSteps[indexForStep].children[0].style.opacity = '1';
+      that.currentSteps[indexForStep].children[0].style.display = 'block';
+      console.log('else', width, this.currentSaveContent);
+    }
+    if (element && document.querySelector('#' + element) !== null && width >= 769) {
       if (document.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
         backdrop = document.createElement('DIV');
         backdrop.id = 'vainilla-tour-backdrop';
@@ -430,7 +448,7 @@ var declaredProps = (function () {
     this.currentSteps[indexForStep].children[0].style.display = 'block';
   };
 
-  polymerTour.nextStep = function (indexForStep) {
+  polymerTour.nextStep = function (indexForStep, reOpen) {
     var that = this;
 
     forEach(that.currentSteps, function (step) {
@@ -438,9 +456,12 @@ var declaredProps = (function () {
     });
     if (indexForStep < this.countStep) {
       that.currentSteps[indexForStep].style.display = 'inline';
-      this.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep);
+      this.parentCoordinates(that.currentSteps[indexForStep].for, indexForStep, window.innerWidth);
     }
-    this.cleanBorders(indexForStep);
+    //console.log('indexForStep', indexForStep);
+    if (!reOpen) {
+      this.cleanBorders(indexForStep);
+    }
     this.changeColors(indexForStep);
 
     if (this.currentLastStep !== undefined && this.currentSteps[this.currentLastStep] !== undefined) {
@@ -511,16 +532,29 @@ var declaredProps = (function () {
     this.registerElementActions();
     this.savePreferencesForSteps();
     window.addEventListener('resize', function () {
-      that.parentCoordinates(that.currentSteps[that.currentStep].for, that.currentStep);
+      that.parentCoordinates(that.currentSteps[that.currentStep].for, that.currentStep, window.innerWidth);
     });
+  };
+
+  polymerTour.reOpen = function () {
+    var that = this;
+    localStorage.setItem(this.name, 0);
+    that.registerElementActions(true);
+    this.savePreferencesForSteps();
+    window.addEventListener('resize', function () {
+      that.parentCoordinates(that.currentSteps[that.currentStep].for, that.currentStep, window.innerWidth);
+    });
+    this.style.opacity = 1;
+    this.style.display = 'inline';
   };
 
   polymerTour.hideAll = function () {
     this.style.opacity = 0;
+    this.style.display = 'none';
     this.removeBackDrop();
   };
 
-  polymerTour.registerElementActions = function () {
+  polymerTour.registerElementActions = function (reOpen) {
     var steps = this.children,
       polymertour = this;
 
@@ -528,9 +562,7 @@ var declaredProps = (function () {
     this.currentSteps = filter(steps, function (step) {
       return step.tagName === 'STEP-TOUR';
     });
-
     this.currentStep = this.getFromLocalStorage(this.name, 'currentStep') || 0;
-
     this.countStep = this.currentSteps.length;
 
     if (this.currentStep === -1) {
@@ -539,12 +571,12 @@ var declaredProps = (function () {
       if (this.countStep === 1) {
         this.verificaBotones(-1);
         setTimeout(function () {
-          polymertour.nextStep(0);
+          polymertour.nextStep(0, reOpen);
         }, 10);
       } else {
         this.verificaBotones(this.currentStep);
         setTimeout(function () {
-          polymertour.nextStep(polymertour.currentStep);
+          polymertour.nextStep(polymertour.currentStep, reOpen);
         }, 10);
       }
     }
