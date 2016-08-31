@@ -28,12 +28,24 @@
 
   </style>
 <vainilla-tour with-labels='true' name='tour'>
-  <step-tour value='Welcome to &lsaquo;vainilla-tour&rsaquo;'></step-tour>
-  <step-tour value='Change Color text and background fill' color="white" background="#2196F3"></step-tour>
-  <step-tour value='Easy to use, set for attribute and enjoy <br> Example for="example"' for='example'></step-tour>
-  <step-tour value='Uses a localstorage for simulate persist step'></step-tour>
-  <step-tour value='Support for fixed elements <br> LEFT' for='left'></step-tour>
-  <step-tour value='Support for fixed elements <br> RIGHT' for='right'></step-tour>
+  <step-tour>
+      <h1>Welcome to &lsaquo;vainilla-tour&rsaquo; H1 tag</h1>
+  </step-tour>
+  <step-tour color="white" background="#2196F3">
+      <p>Change Color text, background fill and use P tag</p>
+  </step-tour>
+  <step-tour for='example'>
+      <h3>Easy to use, set 'for' attribute in `<step-tour>` tag H3 tag</h3>
+      <h4>Example = for="example" H4 tag</h4>
+  </step-tour>
+  <step-tour for='left'>
+      <span>Support for fixed elements</span>
+      <strong>LEFT property fixed CSS</strong>
+  </step-tour>
+  <step-tour for='right'>
+      <span>Support for fixed elements</span>
+      <strong>RIGHT property fixed CSS</strong>
+  </step-tour>
 </vainilla-tour>
 <!-- Pre Loader -->
 <div id="loader-wrapper">
