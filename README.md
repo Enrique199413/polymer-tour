@@ -11,7 +11,9 @@ Is a pure JS web-component for tour like [Bootstrap Tour](http://bootstraptour.c
 
 ```html
 <vainilla-tour with-labels='true' name='tourname' id='uniqueID'>
-  <step-tour value='content visible' for='elementId' background='colorHEX' color='colorHEX'></step-tour>
+  <step-tour for='elementId' background='colorHEX' color='colorHEX'>
+  ...Custom tags for HTML
+  </step-tour>
 </vainilla-tour>
 ```
 ## `<vainilla-tour>` properties
@@ -25,7 +27,6 @@ Is a pure JS web-component for tour like [Bootstrap Tour](http://bootstraptour.c
 
 |property   | default | require  |  description |
 |---|---|---|---|
-| value | ""  | yes  | message to show  |
 | for | ""  | no  | element `id` reference  |
 | color  |  black | no  | the custom font-color HEX or byName |
 | background  | white  | no   | custom background color for element  |
