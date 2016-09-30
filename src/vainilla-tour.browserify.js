@@ -161,6 +161,9 @@ var declaredProps = (function () {
     },
     background: {
       type: String
+    },
+    cb: {
+      type: String
     }
   };
 
@@ -407,33 +410,51 @@ var declaredProps = (function () {
     //Check for window Visibility
     this.getCurrentPositionForInWindow(element);
     this.getRulesTourPosition(indexForStep);
-    //console.log(this.coordinatesForElement, this.windowScreen, this.tourSizes);
-    if (this.coordinatesForElement.left > this.windowScreen.middlePointX) {
-      this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
-      this.currentSteps[indexForStep].parentNode.style.left = 'initial';
-      if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
-        this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width - this.tourSizes.width + 'px';
-      }
-    } else {
-      this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+    console.log(this.coordinatesForElement, this.windowScreen, this.tourSizes);
+
+    if (this.coordinatesForElement.right === this.windowScreen.width) {
       this.currentSteps[indexForStep].parentNode.style.right = 'initial';
-      if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
-        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width - this.tourSizes.width + 'px';
-      }
-    }
-
-
-
-    if ((this.coordinatesForElement.top + this.coordinatesForElement.height + this.tourSizes.height) > this.windowScreen.height) {
-      this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY - (this.tourSizes.height / 2) + 'px';
-      //console.log('el elemnto ya no se ve en pantalla se centra');
+      this.currentSteps[indexForStep].parentNode.style.left = 'initial';
     } else {
-      if ((this.coordinatesForElement.top + this.coordinatesForElement.height) > this.windowScreen.middlePointY) {
-        this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top - this.tourSizes.height + 'px';
+      if (this.coordinatesForElement.left > this.windowScreen.middlePointX) {
+        this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+        this.currentSteps[indexForStep].parentNode.style.left = 'initial';
+        if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
+          this.currentSteps[indexForStep].parentNode.style.right = this.coordinatesForElement.width - this.tourSizes.width + 'px';
+        }
       } else {
-        this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top + this.coordinatesForElement.height + 'px';
+        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width + this.tourSizes.marginElemnt + 'px';
+        this.currentSteps[indexForStep].parentNode.style.right = 'initial';
+        if ((this.coordinatesForElement.width + this.tourSizes.width) > this.windowScreen.width) {
+          this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.width - this.tourSizes.width + 'px';
+        }
       }
     }
+    if (this.coordinatesForElement.position === 'relative') {
+      if (this.coordinatesForElement.right < 100) {
+        this.currentSteps[indexForStep].parentNode.style.right = 'initial';
+        this.currentSteps[indexForStep].parentNode.style.left = this.coordinatesForElement.right + 'px';
+      } else {
+        this.currentSteps[indexForStep].parentNode.style.right = '0px';
+      }
+    }
+
+
+    if ((this.coordinatesForElement.top + this.coordinatesForElement.height) === this.windowScreen.height) {
+      this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY;
+    } else {
+      if ((this.coordinatesForElement.top + this.coordinatesForElement.height) > this.windowScreen.height) {
+        this.currentSteps[indexForStep].parentNode.style.top = this.windowScreen.middlePointY - (this.tourSizes.height / 2) + 'px';
+        //console.log('el elemnto ya no se ve en pantalla se centra');
+      } else {
+        if ((this.coordinatesForElement.top + this.coordinatesForElement.height) > this.windowScreen.middlePointY) {
+          this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top - this.tourSizes.height + 'px';
+        } else {
+          this.currentSteps[indexForStep].parentNode.style.top = this.coordinatesForElement.top + this.coordinatesForElement.height + 'px';
+        }
+      }
+    }
+
 
   };
 
@@ -449,7 +470,8 @@ var declaredProps = (function () {
   };
 
   polymerTour.nextStep = function (indexForStep, reOpen) {
-    var that = this;
+    var that = this,
+      fn;
 
     forEach(that.currentSteps, function (step) {
       step.children[0].style.display = 'none';
@@ -468,6 +490,13 @@ var declaredProps = (function () {
       this.currentSteps[this.currentLastStep].children[0].style.opacity = 0;
       this.currentSteps[this.currentLastStep].children[0].style.display = 'none';
     }
+    if (that.currentSteps[indexForStep] !== undefined && that.currentSteps[indexForStep].getAttribute('cb') !== null) {
+      fn = that[that.currentSteps[indexForStep].getAttribute('cb')];
+      if (fn) {
+        return fn.apply();
+      }
+    }
+
   };
 
   polymerTour.verificaBotones = function (indexForSteps) {
@@ -596,6 +625,9 @@ var declaredProps = (function () {
     });
     //div.innerHTML = description;
     this.appendChild(div);
+    if (this.cb) {
+      console.log('existe un cb');
+    }
   };
 
   stepTour.attachedCallback = function () {
