@@ -252,7 +252,8 @@ var declaredProps = (function () {
   polymerTour.event = function (evento) {
     //validations is here
     var data = {},
-      ultimo;
+      ultimo,
+      fn;
     switch (evento) {
     case 'next':
       if (this.currentStep !== this.countStep) {
@@ -291,6 +292,12 @@ var declaredProps = (function () {
       data.currentStep = -1;
       data.countStep = this.countStep;
       this.addDataToLocalstorage(this.name, data);
+      if (this.finishiedAction !== null) {
+        fn = this.finishiedAction;
+        if (fn) {
+          return fn.apply();
+        }
+      }
       break;
     }
     //console.log(this.currentSteps, this.countStep, this.currentStep);
@@ -334,7 +341,7 @@ var declaredProps = (function () {
       }
       that.currentSteps[indexForStep].children[0].style.opacity = '1';
       that.currentSteps[indexForStep].children[0].style.display = 'block';
-      console.log('else', width, this.currentSaveContent);
+      //console.log('else', width, this.currentSaveContent);
     }
     if (element && document.querySelector('#' + element) !== null && width >= 769) {
       if (document.querySelectorAll('#vainilla-tour-backdrop').length === 0) {
@@ -410,7 +417,7 @@ var declaredProps = (function () {
     //Check for window Visibility
     this.getCurrentPositionForInWindow(element);
     this.getRulesTourPosition(indexForStep);
-    console.log(this.coordinatesForElement, this.windowScreen, this.tourSizes);
+    //console.log(this.coordinatesForElement, this.windowScreen, this.tourSizes);
 
     if (this.coordinatesForElement.right === this.windowScreen.width) {
       this.currentSteps[indexForStep].parentNode.style.right = 'initial';
@@ -625,9 +632,6 @@ var declaredProps = (function () {
     });
     //div.innerHTML = description;
     this.appendChild(div);
-    if (this.cb) {
-      console.log('existe un cb');
-    }
   };
 
   stepTour.attachedCallback = function () {
